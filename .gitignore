@@ -1,0 +1,10 @@
+# Never commit secrets
+.env
+*.token
+
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
