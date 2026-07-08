@@ -1,0 +1,102 @@
+{%- comment -%}
+  TEEORA — Story / Values pillars
+  Block-driven set of brand promises. Numbered, editorial, staggered.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section class="tee-story color-{{ s.color_scheme }}">
+  <div class="tee-story__wrap">
+    <div class="tee-story__intro" data-tee-reveal>
+      {%- if s.eyebrow != blank -%}<span class="tee-eyebrow">{{ s.eyebrow }}</span>{%- endif -%}
+      {%- if s.heading != blank -%}<h2 class="tee-display tee-story__heading">{{ s.heading }}</h2>{%- endif -%}
+      {%- if s.body != blank -%}<div class="tee-lede tee-story__lede">{{ s.body }}</div>{%- endif -%}
+    </div>
+
+    <div class="tee-story__pillars">
+      {%- for block in section.blocks -%}
+        <div class="tee-story__pillar" data-tee-reveal style="--tee-reveal-delay: {{ forloop.index0 | times: 90 }}ms" {{ block.shopify_attributes }}>
+          <span class="tee-story__num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          {%- if block.settings.title != blank -%}<h3 class="tee-story__title">{{ block.settings.title }}</h3>{%- endif -%}
+          {%- if block.settings.text != blank -%}<p class="tee-story__text">{{ block.settings.text }}</p>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-story {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--tee-section-y);
+    padding-inline: var(--tee-gutter);
+  }
+  .tee-story__wrap { max-width: 1500px; margin-inline: auto; }
+  .tee-story__intro { max-width: 52ch; margin-bottom: clamp(3rem, 6vw, 5rem); display: flex; flex-direction: column; gap: 1.3rem; }
+  .tee-story__heading { font-size: clamp(1.9rem, 4vw, 3.2rem); }
+  .tee-story__lede { margin: 0; }
+
+  .tee-story__pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: clamp(2rem, 4vw, 4rem);
+  }
+  .tee-story__pillar {
+    display: flex; flex-direction: column; gap: 0.9rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--color-border, var(--tee-line));
+  }
+  .tee-story__num {
+    font-family: var(--tee-serif); font-size: 0.9rem; opacity: 0.5;
+    letter-spacing: 0.1em;
+  }
+  .tee-story__title {
+    font-family: var(--tee-serif); font-weight: 500;
+    font-size: clamp(1.2rem, 1.8vw, 1.5rem); letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .tee-story__text {
+    font-family: var(--tee-sans); font-weight: 300;
+    font-size: 0.95rem; line-height: 1.65; opacity: 0.8; margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "TEEORA Story",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our Promise" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Made with <em>intention</em>." },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Four principles guide everything we make.</p>" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-5" }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Pillar",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Natural materials" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Organic cotton, responsible wool and linen — traceable to source." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "TEEORA Story",
+      "category": "TEEORA",
+      "blocks": [
+        { "type": "pillar", "settings": { "title": "Natural materials", "text": "Organic cotton, responsible wool and linen — traceable to source." } },
+        { "type": "pillar", "settings": { "title": "Considered craft", "text": "Small-batch production with makers we know by name." } },
+        { "type": "pillar", "settings": { "title": "Built to last", "text": "Timeless cuts and durable finishing, designed to outlive the season." } },
+        { "type": "pillar", "settings": { "title": "Lighter footprint", "text": "Carbon-neutral delivery and plastic-free packaging, always." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,236 @@
+{%- comment -%}
+  TEEORA — Editorial Hero
+  Full-bleed campaign hero: image or video ground, minimal serif
+  statement, restrained CTAs. Slow image reveal + optional parallax.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign scheme = s.color_scheme
+-%}
+
+<section
+  class="tee-hero color-{{ scheme }}"
+  data-tee-hero
+  data-parallax="{{ s.parallax }}"
+  style="
+    --tee-hero-h: {{ s.height }}svh;
+    --tee-hero-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};
+    --tee-hero-align: {{ s.text_position }};
+    --tee-hero-justify: {{ s.text_align }};
+  "
+>
+  <div class="tee-hero__media" data-tee-hero-media>
+    {%- if s.video != blank -%}
+      {{ s.video | video_tag: image_size: '1600x', autoplay: true, loop: true, muted: true, controls: false, class: 'tee-hero__img' }}
+    {%- elsif s.image != blank -%}
+      {{
+        s.image
+        | image_url: width: 3200
+        | image_tag:
+          widths: '750, 1100, 1500, 1900, 2400, 3200',
+          sizes: '100vw',
+          class: 'tee-hero__img',
+          loading: 'eager',
+          fetchpriority: 'high',
+          alt: s.image.alt | default: s.heading | strip_html
+      }}
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'tee-hero__img tee-hero__img--placeholder' }}
+    {%- endif -%}
+    <div class="tee-hero__overlay"></div>
+  </div>
+
+  <div class="tee-hero__inner">
+    <div class="tee-hero__content">
+      {%- if s.eyebrow != blank -%}
+        <span class="tee-eyebrow tee-hero__eyebrow" style="--tee-reveal-delay:80ms">{{ s.eyebrow }}</span>
+      {%- endif -%}
+
+      {%- if s.heading != blank -%}
+        <h1 class="tee-display tee-hero__heading" style="--tee-reveal-delay:180ms">{{ s.heading }}</h1>
+      {%- endif -%}
+
+      {%- if s.body != blank -%}
+        <div class="tee-lede tee-hero__lede" style="--tee-reveal-delay:300ms">{{ s.body }}</div>
+      {%- endif -%}
+
+      {%- if s.button_label != blank or s.button_2_label != blank -%}
+        <div class="tee-hero__actions" style="--tee-reveal-delay:420ms">
+          {%- if s.button_label != blank -%}
+            <a class="tee-btn tee-btn--light" href="{{ s.button_link | default: '#' }}">{{ s.button_label }}</a>
+          {%- endif -%}
+          {%- if s.button_2_label != blank -%}
+            <a class="tee-link tee-hero__link2" href="{{ s.button_2_link | default: '#' }}">{{ s.button_2_label }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if s.show_scroll -%}
+      <div class="tee-hero__scroll" aria-hidden="true">
+        <span>{{ s.scroll_label }}</span>
+        <span class="tee-hero__scroll-line"></span>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-hero {
+    position: relative;
+    min-height: var(--tee-hero-h, 92svh);
+    display: flex;
+    overflow: hidden;
+    isolation: isolate;
+    color: var(--color-foreground, #fff);
+  }
+  .tee-hero__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+  .tee-hero__img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+    transform: scale(1.08);
+    opacity: 0;
+    animation: tee-hero-reveal 1.6s var(--tee-ease-luxe) 0.05s forwards;
+  }
+  .tee-hero[data-parallax="true"] .tee-hero__img { will-change: transform; }
+  .tee-hero__img--placeholder { background: var(--tee-cream); }
+  .tee-hero__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,8,6,0.05) 0%, rgba(10,8,6,0.5) 100%);
+    opacity: var(--tee-hero-overlay, 0.35);
+  }
+
+  .tee-hero__inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: var(--tee-hero-align, flex-end);
+    padding: clamp(2rem, 6vw, 5.5rem) var(--tee-gutter);
+    gap: 2rem;
+  }
+  .tee-hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: var(--tee-hero-justify, flex-start);
+    text-align: var(--tee-hero-justify, left);
+    gap: 1.5rem;
+    max-width: 40ch;
+  }
+  .tee-hero__content[style], .tee-hero__inner { }
+  .tee-hero__heading { max-width: 15ch; }
+  .tee-hero__lede { color: currentColor; opacity: 0.9; }
+  .tee-hero__actions {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+  }
+
+  /* Load reveal for hero copy */
+  .tee-hero__eyebrow, .tee-hero__heading, .tee-hero__lede, .tee-hero__actions {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: tee-hero-rise 1s var(--tee-ease) forwards;
+    animation-delay: var(--tee-reveal-delay, 0ms);
+  }
+
+  .tee-hero__scroll {
+    position: absolute;
+    bottom: clamp(1.5rem, 3vw, 2.5rem);
+    right: var(--tee-gutter);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--tee-sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .tee-hero__scroll-line {
+    width: 3.5rem; height: 1px; background: currentColor; position: relative; overflow: hidden;
+  }
+  .tee-hero__scroll-line::after {
+    content: ""; position: absolute; inset: 0;
+    background: rgba(255,255,255,0.9);
+    transform: translateX(-100%);
+    animation: tee-hero-sweep 2.4s var(--tee-ease) infinite;
+  }
+
+  @keyframes tee-hero-reveal { to { opacity: 1; transform: scale(1); } }
+  @keyframes tee-hero-rise { to { opacity: 1; transform: none; } }
+  @keyframes tee-hero-sweep { 0% { transform: translateX(-100%); } 60%,100% { transform: translateX(100%); } }
+
+  @media screen and (max-width: 749px) {
+    .tee-hero__content { max-width: 100%; }
+    .tee-hero__actions { width: 100%; flex-direction: column; align-items: stretch; }
+    .tee-hero__actions .tee-btn { width: 100%; }
+    .tee-hero__link2 { text-align: center; }
+    .tee-hero__scroll { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tee-hero__img { animation: none; opacity: 1; transform: none; }
+    .tee-hero__eyebrow, .tee-hero__heading, .tee-hero__lede, .tee-hero__actions { animation: none; opacity: 1; transform: none; }
+    .tee-hero__scroll-line::after { animation: none; }
+  }
+{% endstylesheet %}
+
+<script>
+  /* Subtle parallax on the hero image (desktop, motion-allowed only). */
+  (function () {
+    var root = document.currentScript.closest('[data-tee-hero]');
+    if (!root || root.dataset.parallax !== 'true') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(max-width: 749px)').matches) return;
+    var img = root.querySelector('[data-tee-hero-media] .tee-hero__img');
+    if (!img) return;
+    var ticking = false;
+    function update() {
+      var rect = root.getBoundingClientRect();
+      var vh = window.innerHeight || 1;
+      var progress = (rect.top + rect.height / 2 - vh / 2) / vh; // ~ -1..1
+      img.style.transform = 'scale(1.12) translate3d(0,' + (progress * 5).toFixed(2) + '%,0)';
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { window.requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
+    update();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "TEEORA Hero",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "header", "content": "Media" },
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "video", "id": "video", "label": "Background video", "info": "Overrides the image when set. Muted, autoplay, looped." },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay darkness", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 35 },
+    { "type": "checkbox", "id": "parallax", "label": "Parallax on scroll", "default": true },
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Autumn Edit" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Quiet luxury, <em>considered</em> daily." },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Elevated essentials cut from natural fibres — designed to be worn, and kept, for years.</p>" },
+    { "type": "text", "id": "button_label", "label": "Primary button", "default": "Explore the collection" },
+    { "type": "url", "id": "button_link", "label": "Primary link" },
+    { "type": "text", "id": "button_2_label", "label": "Secondary link", "default": "Discover the house" },
+    { "type": "url", "id": "button_2_link", "label": "Secondary link URL" },
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "text_align", "label": "Text alignment", "options": [ {"value":"flex-start","label":"Left"}, {"value":"center","label":"Center"} ], "default": "flex-start" },
+    { "type": "select", "id": "text_position", "label": "Vertical position", "options": [ {"value":"flex-start","label":"Top"}, {"value":"center","label":"Middle"}, {"value":"flex-end","label":"Bottom"} ], "default": "flex-end" },
+    { "type": "range", "id": "height", "label": "Height", "min": 60, "max": 100, "step": 1, "unit": "vh", "default": 92 },
+    { "type": "checkbox", "id": "show_scroll", "label": "Show scroll cue", "default": true },
+    { "type": "text", "id": "scroll_label", "label": "Scroll cue label", "default": "Scroll" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-6" }
+  ],
+  "presets": [ { "name": "TEEORA Hero", "category": "TEEORA" } ]
+}
+{% endschema %}

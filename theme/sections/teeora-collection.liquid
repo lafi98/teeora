@@ -1,0 +1,265 @@
+{%- comment -%}
+  TEEORA — Featured Collection
+  Editorial product grid with bespoke luxury cards:
+  hover image-swap, slow zoom, quiet quick-add, refined pricing.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign collection = collections[s.collection]
+  assign limit = s.products_count
+-%}
+
+<section class="tee-col color-{{ s.color_scheme }}">
+  <div class="tee-col__head" data-tee-reveal>
+    <div class="tee-col__head-left">
+      {%- if s.eyebrow != blank -%}<span class="tee-eyebrow">{{ s.eyebrow }}</span>{%- endif -%}
+      {%- if s.heading != blank -%}<h2 class="tee-display tee-col__title">{{ s.heading }}</h2>{%- endif -%}
+    </div>
+    {%- if s.button_label != blank -%}
+      <a class="tee-link tee-col__viewall" href="{{ s.button_link | default: collection.url | default: '#' }}">{{ s.button_label }}</a>
+    {%- endif -%}
+  </div>
+
+  <div class="tee-col__grid" style="--tee-cols: {{ s.columns }};">
+    {%- if collection.products.size > 0 -%}
+      {%- for product in collection.products limit: limit -%}
+        {%- liquid
+          assign second = product.images[1]
+          assign on_sale = false
+          if product.compare_at_price > product.price
+            assign on_sale = true
+          endif
+        -%}
+        <article class="tee-card" data-tee-reveal style="--tee-reveal-delay: {{ forloop.index0 | times: 60 }}ms">
+          <a class="tee-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+            {%- if product.featured_image -%}
+              {{
+                product.featured_image
+                | image_url: width: 900
+                | image_tag:
+                  widths: '300, 450, 600, 900',
+                  sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
+                  class: 'tee-card__img tee-card__img--primary',
+                  loading: 'lazy',
+                  alt: product.featured_image.alt | default: product.title
+              }}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'tee-card__img tee-card__img--primary' }}
+            {%- endif -%}
+            {%- if second -%}
+              {{
+                second
+                | image_url: width: 900
+                | image_tag:
+                  widths: '300, 450, 600, 900',
+                  sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
+                  class: 'tee-card__img tee-card__img--second',
+                  loading: 'lazy',
+                  alt: ''
+              }}
+            {%- endif -%}
+
+            {%- if on_sale -%}<span class="tee-card__badge">Sale</span>
+            {%- elsif product.tags contains 'new' -%}<span class="tee-card__badge">New</span>{%- endif -%}
+          </a>
+
+          {%- if s.quick_add and product.available -%}
+            {%- assign first_variant = product.selected_or_first_available_variant -%}
+            <form method="post" action="{{ routes.cart_add_url }}" class="tee-card__quick" data-tee-quickadd>
+              <input type="hidden" name="id" value="{{ first_variant.id }}">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="tee-card__quick-btn">
+                {%- if product.has_only_default_variant -%}Add to bag{%- else -%}Quick add{%- endif -%}
+              </button>
+            </form>
+          {%- endif -%}
+
+          <div class="tee-card__meta">
+            <a class="tee-card__title" href="{{ product.url }}">{{ product.title }}</a>
+            <span class="tee-card__price">
+              {%- if on_sale -%}
+                <span class="tee-card__price--sale">{{ product.price | money }}</span>
+                <s class="tee-card__price--was">{{ product.compare_at_price | money }}</s>
+              {%- else -%}
+                {{ product.price | money }}
+              {%- endif -%}
+            </span>
+          </div>
+        </article>
+      {%- endfor -%}
+    {%- else -%}
+      {%- for i in (1..s.products_count) -%}
+        <article class="tee-card" data-tee-reveal>
+          <div class="tee-card__media">{{ 'product-' | append: i | placeholder_svg_tag: 'tee-card__img tee-card__img--primary' }}</div>
+          <div class="tee-card__meta">
+            <span class="tee-card__title">Product title</span>
+            <span class="tee-card__price">$0.00</span>
+          </div>
+        </article>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-col {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--tee-section-y);
+    padding-inline: var(--tee-gutter);
+  }
+  .tee-col__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+    max-width: 1600px; margin-inline: auto;
+  }
+  .tee-col__head-left { display: flex; flex-direction: column; gap: 1rem; }
+  .tee-col__title { font-size: clamp(1.8rem, 3.6vw, 3rem); }
+  .tee-col__viewall { flex-shrink: 0; padding-bottom: 0.5rem; }
+
+  .tee-col__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--tee-cols, 4), 1fr);
+    gap: clamp(1rem, 2vw, 1.75rem) clamp(0.75rem, 1.5vw, 1.5rem);
+    max-width: 1600px; margin-inline: auto;
+  }
+
+  .tee-card { position: relative; display: flex; flex-direction: column; }
+  .tee-card__media {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    background: var(--tee-cream);
+  }
+  .tee-card__img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: opacity 0.8s var(--tee-ease), transform 1.2s var(--tee-ease-luxe);
+  }
+  .tee-card__img--second { opacity: 0; }
+  .tee-card:hover .tee-card__img--primary { opacity: 0; }
+  .tee-card:hover .tee-card__img--second { opacity: 1; }
+  .tee-card:hover .tee-card__img { transform: scale(1.04); }
+  .tee-card__img--primary:only-child { opacity: 1; }
+  .tee-card:hover .tee-card__img--primary:only-child { opacity: 1; }
+
+  .tee-card__badge {
+    position: absolute; top: 0.85rem; left: 0.85rem;
+    z-index: 2;
+    font-family: var(--tee-sans);
+    font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 0.4rem 0.7rem;
+    background: var(--color-background); color: var(--color-foreground);
+  }
+
+  .tee-card__quick {
+    position: absolute;
+    bottom: calc(0.85rem + var(--tee-card-meta, 0px));
+    left: 0.85rem; right: 0.85rem;
+    z-index: 2;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.5s var(--tee-ease), transform 0.5s var(--tee-ease);
+    pointer-events: none;
+  }
+  .tee-card:hover .tee-card__quick { opacity: 1; transform: none; pointer-events: auto; }
+  .tee-card__quick-btn {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-family: var(--tee-sans);
+    font-weight: 500; font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--color-foreground);
+    background: color-mix(in srgb, var(--color-background) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--color-border, var(--tee-line));
+    cursor: pointer;
+    transition: background 0.4s var(--tee-ease), color 0.4s var(--tee-ease);
+  }
+  .tee-card__quick-btn:hover { background: var(--color-foreground); color: var(--color-background); }
+
+  .tee-card__meta {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1rem;
+  }
+  .tee-card__title {
+    font-family: var(--tee-serif);
+    font-size: 1.02rem; font-weight: 400; letter-spacing: -0.01em;
+    color: inherit; text-decoration: none;
+    line-height: 1.2;
+  }
+  .tee-card__title:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .tee-card__price {
+    font-family: var(--tee-sans); font-size: 0.85rem; letter-spacing: 0.02em;
+    white-space: nowrap; opacity: 0.9;
+    display: inline-flex; gap: 0.5rem;
+  }
+  .tee-card__price--sale { color: var(--tee-champagne); }
+  .tee-card__price--was { opacity: 0.5; }
+
+  @media screen and (max-width: 989px) {
+    .tee-col__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media screen and (max-width: 749px) {
+    .tee-col__grid { grid-template-columns: repeat(2, 1fr); }
+    .tee-col__head { align-items: flex-start; }
+    .tee-card__quick { display: none; }
+    .tee-card__meta { flex-direction: column; gap: 0.25rem; }
+  }
+{% endstylesheet %}
+
+<script>
+  /* Quiet quick-add → posts to cart, then opens Horizon's cart drawer if present. */
+  (function () {
+    var root = document.currentScript.closest('.tee-col');
+    if (!root) return;
+    root.querySelectorAll('[data-tee-quickadd]').forEach(function (form) {
+      if (form.dataset.teeBound) return;
+      form.dataset.teeBound = '1';
+      form.addEventListener('submit', function (e) {
+        if (!window.fetch) return; /* graceful fallback: normal POST */
+        e.preventDefault();
+        var btn = form.querySelector('button');
+        var label = btn.textContent;
+        btn.textContent = 'Adding…';
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: form.querySelector('[name=id]').value, quantity: 1 })
+        }).then(function (r) { return r.json(); }).then(function () {
+          btn.textContent = 'Added ✓';
+          document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+          var drawer = document.querySelector('cart-drawer, #cart-drawer, [ref="cartDrawer"]');
+          if (drawer && typeof drawer.open === 'function') drawer.open();
+          else if (drawer && drawer.showModal) { try { drawer.showModal(); } catch (e) {} }
+          setTimeout(function () { btn.textContent = label; }, 1800);
+        }).catch(function () { form.submit(); });
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "TEEORA Collection",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Newly Arrived" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "The season's <em>edit</em>" },
+    { "type": "range", "id": "products_count", "label": "Products", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "quick_add", "label": "Enable quick add", "default": true },
+    { "type": "text", "id": "button_label", "label": "View-all label", "default": "View all" },
+    { "type": "url", "id": "button_link", "label": "View-all link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [ { "name": "TEEORA Collection", "category": "TEEORA" } ]
+}
+{% endschema %}

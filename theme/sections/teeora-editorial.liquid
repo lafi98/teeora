@@ -1,0 +1,123 @@
+{%- comment -%}
+  TEEORA — Editorial Split
+  Image + text, alternating sides. Scroll image-reveal, optional
+  oversized index numeral. For brand statements & campaign chapters.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section class="tee-ed color-{{ s.color_scheme }}" data-flip="{{ s.flip }}">
+  <div class="tee-ed__grid">
+    <div class="tee-ed__media" data-tee-reveal>
+      <div class="tee-ed__media-inner">
+        {%- if s.image != blank -%}
+          {{
+            s.image
+            | image_url: width: 1600
+            | image_tag:
+              widths: '600, 900, 1200, 1600',
+              sizes: '(min-width: 750px) 50vw, 100vw',
+              class: 'tee-ed__img',
+              loading: 'lazy',
+              alt: s.image.alt | default: s.heading | strip_html
+          }}
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'tee-ed__img' }}
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="tee-ed__body">
+      <div class="tee-ed__body-inner">
+        {%- if s.index != blank -%}
+          <span class="tee-ed__index" data-tee-reveal>{{ s.index }}</span>
+        {%- endif -%}
+        {%- if s.eyebrow != blank -%}
+          <span class="tee-eyebrow" data-tee-reveal style="--tee-reveal-delay:60ms">{{ s.eyebrow }}</span>
+        {%- endif -%}
+        {%- if s.heading != blank -%}
+          <h2 class="tee-display tee-ed__heading" data-tee-reveal style="--tee-reveal-delay:120ms">{{ s.heading }}</h2>
+        {%- endif -%}
+        {%- if s.body != blank -%}
+          <div class="tee-lede tee-ed__lede" data-tee-reveal style="--tee-reveal-delay:200ms">{{ s.body }}</div>
+        {%- endif -%}
+        {%- if s.button_label != blank -%}
+          <a class="tee-link tee-ed__link" data-tee-reveal style="--tee-reveal-delay:280ms" href="{{ s.button_link | default: '#' }}">{{ s.button_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-ed {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--tee-section-y);
+  }
+  .tee-ed__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 6vw, 6rem);
+    padding-inline: var(--tee-gutter);
+    max-width: 1600px;
+    margin-inline: auto;
+  }
+  .tee-ed[data-flip="true"] .tee-ed__media { order: 2; }
+
+  .tee-ed__media-inner { position: relative; overflow: hidden; aspect-ratio: 4 / 5; }
+  .tee-ed__img {
+    width: 100%; height: 100%; object-fit: cover;
+    transform: scale(1.12);
+    transition: transform 1.6s var(--tee-ease-luxe);
+  }
+  .tee-ed__media.is-in .tee-ed__img { transform: scale(1); }
+  .tee-ed__media-inner::after {
+    content: ""; position: absolute; inset: 0;
+    background: var(--color-background);
+    transform: scaleY(1); transform-origin: bottom;
+    transition: transform 1.3s var(--tee-ease-luxe);
+  }
+  .tee-ed__media.is-in .tee-ed__media-inner::after { transform: scaleY(0); }
+
+  .tee-ed__body-inner { max-width: 44ch; display: flex; flex-direction: column; align-items: flex-start; gap: 1.4rem; }
+  .tee-ed__index {
+    font-family: var(--tee-serif);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1;
+    opacity: 0.25;
+    font-weight: 400;
+  }
+  .tee-ed__heading { font-size: clamp(2rem, 4vw, 3.4rem); }
+  .tee-ed__lede { margin: 0; }
+  .tee-ed__link { margin-top: 0.75rem; }
+
+  @media screen and (max-width: 749px) {
+    .tee-ed__grid { grid-template-columns: 1fr; gap: 2.25rem; }
+    .tee-ed[data-flip="true"] .tee-ed__media { order: 0; }
+    .tee-ed__body-inner { max-width: 100%; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "TEEORA Editorial",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "checkbox", "id": "flip", "label": "Image on right", "default": false },
+    { "type": "text", "id": "index", "label": "Index numeral", "default": "01" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The House" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "A study in <em>restraint</em>." },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>We design slowly and edit ruthlessly. Every piece earns its place through material, cut and longevity — never trend.</p>" },
+    { "type": "text", "id": "button_label", "label": "Link label", "default": "Read our story" },
+    { "type": "url", "id": "button_link", "label": "Link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [ { "name": "TEEORA Editorial", "category": "TEEORA" } ]
+}
+{% endschema %}

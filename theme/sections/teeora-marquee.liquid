@@ -1,0 +1,77 @@
+{%- comment -%}
+  TEEORA — Marquee ribbon
+  Slow, continuous band of brand values. Seamless loop, pauses on hover.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign items = s.items | split: '|'
+-%}
+
+<section class="tee-marquee color-{{ s.color_scheme }}" style="--tee-marquee-speed: {{ s.speed }}s;">
+  <div class="tee-marquee__track" aria-hidden="true">
+    {%- for pass in (1..2) -%}
+      <div class="tee-marquee__group">
+        {%- for item in items -%}
+          <span class="tee-marquee__item">
+            {%- if s.serif -%}<span class="tee-marquee__serif">{{ item | strip }}</span>
+            {%- else -%}{{ item | strip }}{%- endif -%}
+          </span>
+          <span class="tee-marquee__mark">{{ s.separator }}</span>
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-marquee {
+    overflow: hidden;
+    padding-block: clamp(1rem, 2.2vw, 1.6rem);
+    border-block: 1px solid var(--color-border, var(--tee-line));
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+  .tee-marquee__track { display: flex; width: max-content; animation: tee-marquee-run var(--tee-marquee-speed, 40s) linear infinite; }
+  .tee-marquee:hover .tee-marquee__track { animation-play-state: paused; }
+  .tee-marquee__group { display: flex; align-items: center; }
+  .tee-marquee__item {
+    font-family: var(--tee-sans);
+    font-weight: 500;
+    font-size: clamp(0.72rem, 1.1vw, 0.86rem);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding-inline: clamp(1.25rem, 3vw, 2.5rem);
+  }
+  .tee-marquee__serif {
+    font-family: var(--tee-serif);
+    text-transform: none;
+    letter-spacing: -0.01em;
+    font-size: 1.35em;
+    font-style: italic;
+    font-weight: 400;
+  }
+  .tee-marquee__mark { opacity: 0.4; font-size: 0.7rem; }
+  @keyframes tee-marquee-run { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .tee-marquee__track { animation: none; justify-content: center; width: 100%; flex-wrap: wrap; }
+    .tee-marquee__group:last-child { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "TEEORA Marquee",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Phrases", "info": "Separate each phrase with a | (pipe).", "default": "Considered design | Natural fibres | Made to last | Complimentary shipping | Carbon-neutral delivery" },
+    { "type": "text", "id": "separator", "label": "Separator symbol", "default": "✦" },
+    { "type": "checkbox", "id": "serif", "label": "Italic serif style", "default": false },
+    { "type": "range", "id": "speed", "label": "Loop duration", "min": 20, "max": 80, "step": 5, "unit": "s", "default": 45 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [ { "name": "TEEORA Marquee", "category": "TEEORA" } ]
+}
+{% endschema %}

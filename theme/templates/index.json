@@ -1,243 +1,127 @@
 /*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */{
+ * TEEORA homepage — luxury editorial composition
+ * Sections are modular (TEEORA * ) and fully editable in the theme editor.
+ */
+{
   "sections": {
-    "hero_jVaWmY": {
-      "type": "hero-fancy",
+    "hero": {
+      "type": "teeora-hero",
       "settings": {
-        "eyebrow": "New collection",
-        "heading": "Wear the future.",
-        "heading_gradient": true,
-        "subheading": "<p>Bold, modern essentials crafted to move with you. Discover the drop everyone's talking about.</p>",
-        "button_1_label": "Shop the collection",
-        "button_1_link": "shopify://collections/all",
-        "button_2_label": "Explore lookbook",
-        "button_2_link": "",
-        "open_in_new_tab": false,
-        "show_stats": true,
-        "stat_1_value": "10k+",
-        "stat_1_label": "Happy customers",
-        "stat_2_value": "4.9★",
-        "stat_2_label": "Average rating",
-        "stat_3_value": "Free",
-        "stat_3_label": "Worldwide shipping",
-        "overlay_opacity": 40,
-        "accent_1": "#7c5cff",
-        "accent_2": "#ff5ca7",
-        "accent_3": "#22d3ee",
-        "text_color": "#ffffff",
-        "text_align": "center",
-        "alignment": "center",
-        "height": 88,
-        "content_width": 760,
-        "corner_radius": 0,
+        "overlay_opacity": 35,
+        "parallax": true,
+        "eyebrow": "The Autumn Edit",
+        "heading": "Quiet luxury, <em>considered</em> daily.",
+        "body": "<p>Elevated essentials cut from natural fibres — designed to be worn, and kept, for years.</p>",
+        "button_label": "Explore the collection",
+        "button_link": "shopify://collections/all",
+        "button_2_label": "Discover the house",
+        "text_align": "flex-start",
+        "text_position": "flex-end",
+        "height": 92,
         "show_scroll": true,
+        "scroll_label": "Scroll",
+        "color_scheme": "scheme-6"
+      }
+    },
+    "marquee": {
+      "type": "teeora-marquee",
+      "settings": {
+        "items": "Considered design | Natural fibres | Made to last | Complimentary shipping | Carbon-neutral delivery",
+        "separator": "✦",
+        "serif": false,
+        "speed": 45,
         "color_scheme": "scheme-1"
       }
     },
-    "product_list_fa6P9H": {
-      "type": "product-list",
-      "blocks": {
-        "static-header": {
-          "type": "_product-list-content",
-          "name": "t:names.header",
-          "static": true,
-          "settings": {
-            "content_direction": "row",
-            "vertical_on_mobile": false,
-            "horizontal_alignment": "space-between",
-            "vertical_alignment": "flex-end",
-            "align_baseline": true,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 12,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_list_text_YFtzcL": {
-              "type": "_product-list-text",
-              "name": "t:names.collection_title",
-              "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_list_button_MWeP9V": {
-              "type": "_product-list-button",
-              "name": "t:names.product_list_button",
-              "settings": {
-                "label": "View all",
-                "open_in_new_tab": false,
-                "style_class": "link",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_list_text_YFtzcL",
-            "product_list_button_MWeP9V"
-          ]
-        },
-        "static-product-card": {
-          "type": "_product-card",
-          "name": "t:names.product_card",
-          "static": true,
-          "settings": {
-            "product_card_gap": 4,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_card_gallery_677WP3": {
-              "type": "_product-card-gallery",
-              "name": "t:names.product_card_media",
-              "settings": {
-                "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_title_YXxMTj": {
-              "type": "product-title",
-              "name": "t:names.product_title",
-              "settings": {
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "price_JQzVV4": {
-              "type": "price",
-              "name": "t:names.product_price",
-              "settings": {
-                "show_sale_price_first": true,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "h6",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "color": "var(--color-foreground)",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_card_gallery_677WP3",
-            "product_title_YXxMTj",
-            "price_JQzVV4"
-          ]
-        }
-      },
-      "name": "Featured collection",
+    "collection_new": {
+      "type": "teeora-collection",
       "settings": {
         "collection": "all",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "max_products": 8,
+        "eyebrow": "Newly Arrived",
+        "heading": "The season's <em>edit</em>",
+        "products_count": 4,
         "columns": 4,
-        "mobile_columns": "2",
-        "mobile_card_size": "60cqw",
-        "columns_gap": 8,
-        "rows_gap": 24,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "horizontal_alignment": "flex-start",
-        "gap": 28,
-        "color_scheme": "scheme-1",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "quick_add": true,
+        "button_label": "View all",
+        "button_link": "shopify://collections/all",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "editorial": {
+      "type": "teeora-editorial",
+      "settings": {
+        "flip": false,
+        "index": "01",
+        "eyebrow": "The House",
+        "heading": "A study in <em>restraint</em>.",
+        "body": "<p>We design slowly and edit ruthlessly. Every piece earns its place through material, cut and longevity — never trend.</p>",
+        "button_label": "Read our story",
+        "color_scheme": "scheme-2"
+      }
+    },
+    "lookbook": {
+      "type": "teeora-lookbook",
+      "settings": {
+        "caption": "Look 07 — The Atelier Coat",
+        "eyebrow": "Campaign",
+        "heading": "Light, <em>shadow</em>, form.",
+        "body": "<p>A seasonal study of silhouette and texture, photographed in natural light.</p>",
+        "button_label": "View the lookbook",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "story": {
+      "type": "teeora-story",
+      "settings": {
+        "eyebrow": "Our Promise",
+        "heading": "Made with <em>intention</em>.",
+        "body": "<p>Four principles guide everything we make.</p>",
+        "color_scheme": "scheme-5"
+      },
+      "blocks": {
+        "p1": { "type": "pillar", "settings": { "title": "Natural materials", "text": "Organic cotton, responsible wool and linen — traceable to source." } },
+        "p2": { "type": "pillar", "settings": { "title": "Considered craft", "text": "Small-batch production with makers we know by name." } },
+        "p3": { "type": "pillar", "settings": { "title": "Built to last", "text": "Timeless cuts and durable finishing, designed to outlive the season." } },
+        "p4": { "type": "pillar", "settings": { "title": "Lighter footprint", "text": "Carbon-neutral delivery and plastic-free packaging, always." } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4"]
+    },
+    "collection_best": {
+      "type": "teeora-collection",
+      "settings": {
+        "collection": "all",
+        "eyebrow": "Most Wanted",
+        "heading": "Signature <em>pieces</em>",
+        "products_count": 4,
+        "columns": 4,
+        "quick_add": true,
+        "button_label": "Shop best sellers",
+        "button_link": "shopify://collections/all",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "newsletter": {
+      "type": "teeora-newsletter",
+      "settings": {
+        "eyebrow": "The List",
+        "heading": "Join the <em>inner circle</em>",
+        "body": "<p>Early access to collections, private events and considered stories. No noise.</p>",
+        "placeholder": "Your email address",
+        "button_label": "Subscribe",
+        "success_message": "Welcome. Please confirm via the email we just sent.",
+        "footnote": "By subscribing you agree to our Privacy Policy. Unsubscribe anytime.",
+        "color_scheme": "scheme-2"
       }
     }
   },
   "order": [
-    "hero_jVaWmY",
-    "product_list_fa6P9H"
+    "hero",
+    "marquee",
+    "collection_new",
+    "editorial",
+    "lookbook",
+    "story",
+    "collection_best",
+    "newsletter"
   ]
 }

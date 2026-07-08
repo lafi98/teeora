@@ -1,0 +1,275 @@
+{%- comment -%}
+  ============================================================
+  TEEORA — Brand design-system layer
+  Loaded globally in <head> (after Horizon's color-schemes) so
+  these tokens & refinements cascade over the whole store.
+
+  Contains:
+   1. Font loading (Fraunces editorial serif + Jost grotesque)
+   2. Brand tokens (palette, spacing, motion)
+   3. Typographic reskin (maps Horizon font vars → brand fonts)
+   4. Luxury UI refinements (buttons, links, cards, badges)
+   5. Reusable utilities (.tee-eyebrow, .tee-display, reveal)
+   6. Scroll-reveal + reduced-motion handling
+  Change fonts/colors here to re-tune the entire brand.
+  ============================================================
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Jost:wght@300;400;500&display=swap"
+>
+
+<style>
+  :root {
+    /* ---- Palette : bone & ink, warm not stark ---- */
+    --tee-ink: #16130f;          /* warm near-black — text & dark grounds */
+    --tee-ink-soft: #16130fdb;
+    --tee-bone: #f6f3ec;         /* warm off-white — primary ground */
+    --tee-cream: #ece5d7;        /* raised warm tone */
+    --tee-stone: #c9bfae;        /* muted mid neutral */
+    --tee-champagne: #a2855c;    /* restrained metallic accent */
+    --tee-line: rgba(22, 19, 15, 0.14);
+    --tee-line-light: rgba(255, 255, 255, 0.22);
+
+    /* ---- Spacing rhythm (fluid) ---- */
+    --tee-section-y: clamp(4.5rem, 9vw, 11rem);
+    --tee-gutter: clamp(1.25rem, 4vw, 4rem);
+
+    /* ---- Motion : slow, weighted, luxe ---- */
+    --tee-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --tee-ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
+    --tee-dur: 0.7s;
+    --tee-dur-slow: 1.1s;
+
+    /* ---- Type families ---- */
+    --tee-serif: "Fraunces", "Times New Roman", Georgia, serif;
+    --tee-sans: "Jost", "Helvetica Neue", Arial, sans-serif;
+
+    /* ---- Reskin Horizon's font tokens ---- */
+    --font-heading--family: var(--tee-serif);
+    --font-heading--weight: 500;
+    --font-accent--family: var(--tee-serif);
+    --font-accent--weight: 400;
+    --font-subheading--family: var(--tee-sans);
+    --font-subheading--weight: 500;
+    --font-body--family: var(--tee-sans);
+    --font-body--weight: 400;
+    --font-paragraph--family: var(--tee-sans);
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Optical tightening for large serif display sizes */
+  h1, .h1 { letter-spacing: -0.02em; }
+  h2, .h2 { letter-spacing: -0.016em; }
+  h3, .h3 { letter-spacing: -0.012em; }
+
+  ::selection { background: var(--tee-ink); color: var(--tee-bone); }
+
+  /* ---- Buttons : editorial small-caps ---- */
+  .button,
+  button.button,
+  .shopify-payment-button__button--unbranded {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-family: var(--tee-sans);
+    font-weight: 500;
+  }
+
+  /* ---- Product cards : quiet, image-first, slow zoom ---- */
+  .product-card-gallery,
+  .product-card__link .card-gallery,
+  .product-card .card-gallery {
+    overflow: hidden;
+  }
+  .product-card img {
+    transition: transform var(--tee-dur-slow) var(--tee-ease-luxe);
+    will-change: transform;
+  }
+  .product-card:hover img,
+  .product-card__link:hover img {
+    transform: scale(1.045);
+  }
+
+  /* ---- Badges : squared, tracked ---- */
+  .badge {
+    letter-spacing: 0.1em;
+    font-family: var(--tee-sans);
+  }
+
+  /* ============================================================
+     Reusable brand utilities (used by teeora-* sections)
+     ============================================================ */
+  .tee-eyebrow {
+    font-family: var(--tee-sans);
+    font-weight: 500;
+    font-size: clamp(0.66rem, 1vw, 0.74rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: inherit;
+    opacity: 0.72;
+  }
+  .tee-eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.55;
+    display: inline-block;
+  }
+  .tee-eyebrow--plain::before { display: none; }
+
+  .tee-display {
+    font-family: var(--tee-serif);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    font-size: clamp(2.4rem, 6vw, 5.5rem);
+    margin: 0;
+  }
+  .tee-display em {
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .tee-lede {
+    font-family: var(--tee-sans);
+    font-weight: 300;
+    font-size: clamp(1rem, 1.5vw, 1.22rem);
+    line-height: 1.65;
+    max-width: 46ch;
+    opacity: 0.85;
+  }
+
+  /* Link with slow underline sweep */
+  .tee-link {
+    font-family: var(--tee-sans);
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    padding-bottom: 0.35rem;
+    display: inline-block;
+  }
+  .tee-link::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 1px;
+    background: currentColor;
+    transform: scaleX(1);
+    transform-origin: left;
+    transition: transform 0.6s var(--tee-ease);
+  }
+  .tee-link:hover::after { transform: scaleX(0); transform-origin: right; }
+
+  /* Ghost/outline luxe button used inside teeora sections */
+  .tee-btn {
+    --pad-x: 2.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1.05rem var(--pad-x);
+    font-family: var(--tee-sans);
+    font-weight: 500;
+    font-size: 0.76rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.5s var(--tee-ease);
+    isolation: isolate;
+  }
+  .tee-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    transform: translateY(101%);
+    transition: transform 0.55s var(--tee-ease-luxe);
+    z-index: -1;
+  }
+  .tee-btn:hover::before { transform: translateY(0); }
+  .tee-btn--solid {
+    background: var(--tee-ink);
+    color: var(--tee-bone);
+    border-color: var(--tee-ink);
+  }
+  .tee-btn--solid::before { background: var(--tee-bone); }
+  .tee-btn--solid:hover { color: var(--tee-ink); }
+  .tee-btn--light { color: var(--tee-bone); }
+  .tee-btn--light::before { background: var(--tee-bone); }
+  .tee-btn--light:hover { color: var(--tee-ink); }
+  .tee-btn--ink { color: var(--tee-ink); }
+  .tee-btn--ink::before { background: var(--tee-ink); }
+  .tee-btn--ink:hover { color: var(--tee-bone); }
+
+  /* ---- Scroll reveal ---- */
+  [data-tee-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity var(--tee-dur-slow) var(--tee-ease),
+                transform var(--tee-dur-slow) var(--tee-ease);
+    transition-delay: var(--tee-reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  [data-tee-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .product-card img { transition: none; }
+    .product-card:hover img { transform: none; }
+    [data-tee-reveal] { opacity: 1 !important; transform: none !important; transition: none; }
+    .tee-btn::before, .tee-link::after { transition: none; }
+  }
+</style>
+
+<script>
+  /* Scroll-reveal: adds .is-in when a [data-tee-reveal] element enters view. */
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+    function scan() {
+      document.querySelectorAll('[data-tee-reveal]:not(.is-in)').forEach(function (el) {
+        io.observe(el);
+      });
+    }
+    if (document.readyState !== 'loading') scan();
+    else document.addEventListener('DOMContentLoaded', scan);
+    /* Re-scan when sections are (re)rendered in the theme editor */
+    document.addEventListener('shopify:section:load', scan);
+  })();
+</script>

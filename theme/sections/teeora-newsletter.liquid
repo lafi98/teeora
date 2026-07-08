@@ -1,0 +1,103 @@
+{%- comment -%}
+  TEEORA — Newsletter invitation
+  Quiet, editorial email capture using Shopify's customer form.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section class="tee-news color-{{ s.color_scheme }}">
+  <div class="tee-news__wrap" data-tee-reveal>
+    {%- if s.eyebrow != blank -%}<span class="tee-eyebrow tee-eyebrow--center">{{ s.eyebrow }}</span>{%- endif -%}
+    {%- if s.heading != blank -%}<h2 class="tee-display tee-news__heading">{{ s.heading }}</h2>{%- endif -%}
+    {%- if s.body != blank -%}<div class="tee-lede tee-news__lede">{{ s.body }}</div>{%- endif -%}
+
+    {%- form 'customer', class: 'tee-news__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="tee-news__field">
+        <input
+          type="email"
+          name="contact[email]"
+          class="tee-news__input"
+          placeholder="{{ s.placeholder }}"
+          aria-label="Email address"
+          required
+        >
+        <button type="submit" class="tee-news__submit" aria-label="Subscribe">
+          <span>{{ s.button_label }}</span>
+        </button>
+      </div>
+      {%- if form.posted_successfully? -%}
+        <p class="tee-news__msg tee-news__msg--ok">{{ s.success_message }}</p>
+      {%- elsif form.errors -%}
+        <p class="tee-news__msg tee-news__msg--err">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+    {%- endform -%}
+
+    {%- if s.footnote != blank -%}<p class="tee-news__note">{{ s.footnote }}</p>{%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-news {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--tee-section-y);
+    padding-inline: var(--tee-gutter);
+    text-align: center;
+  }
+  .tee-news__wrap { max-width: 640px; margin-inline: auto; display: flex; flex-direction: column; align-items: center; gap: 1.4rem; }
+  .tee-eyebrow--center::before { display: none; }
+  .tee-news__heading { font-size: clamp(1.9rem, 4vw, 3.2rem); }
+  .tee-news__lede { margin: 0; text-align: center; }
+  .tee-news__form { width: 100%; max-width: 480px; margin-top: 0.75rem; }
+  .tee-news__field {
+    display: flex; align-items: stretch;
+    border-bottom: 1px solid var(--color-foreground);
+  }
+  .tee-news__input {
+    flex: 1;
+    background: transparent; border: 0; outline: 0;
+    padding: 0.9rem 0.25rem;
+    font-family: var(--tee-sans); font-size: 0.95rem; color: inherit;
+  }
+  .tee-news__input::placeholder { color: inherit; opacity: 0.5; }
+  .tee-news__submit {
+    background: transparent; border: 0; cursor: pointer;
+    font-family: var(--tee-sans); font-weight: 500;
+    font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: inherit; padding: 0 0.5rem;
+    position: relative;
+  }
+  .tee-news__submit span { position: relative; }
+  .tee-news__submit::after {
+    content: ""; position: absolute; left: 0.5rem; right: 0.5rem; bottom: 0.4rem; height: 1px;
+    background: currentColor; transform: scaleX(0); transform-origin: right;
+    transition: transform 0.5s var(--tee-ease);
+  }
+  .tee-news__submit:hover::after { transform: scaleX(1); transform-origin: left; }
+  .tee-news__msg { font-family: var(--tee-sans); font-size: 0.82rem; margin: 0.4rem 0 0; }
+  .tee-news__msg--ok { color: var(--tee-champagne); }
+  .tee-news__msg--err { opacity: 0.8; }
+  .tee-news__note { font-family: var(--tee-sans); font-size: 0.7rem; letter-spacing: 0.04em; opacity: 0.55; margin: 0; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "TEEORA Newsletter",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The List" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Join the <em>inner circle</em>" },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Early access to collections, private events and considered stories. No noise.</p>" },
+    { "type": "text", "id": "placeholder", "label": "Input placeholder", "default": "Your email address" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Subscribe" },
+    { "type": "text", "id": "success_message", "label": "Success message", "default": "Welcome. Please confirm via the email we just sent." },
+    { "type": "text", "id": "footnote", "label": "Footnote", "default": "By subscribing you agree to our Privacy Policy. Unsubscribe anytime." },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" }
+  ],
+  "presets": [ { "name": "TEEORA Newsletter", "category": "TEEORA" } ]
+}
+{% endschema %}
