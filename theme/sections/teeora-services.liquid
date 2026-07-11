@@ -1,0 +1,100 @@
+{%- comment -%}
+  TEEORA — Services / Value props
+  Block-driven grid of house services (gifting, appointments, care…).
+  Each block: optional image or line-icon + title + text + link.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section class="tee-serv color-{{ s.color_scheme }}">
+  <div class="tee-serv__wrap">
+    {%- if s.heading != blank or s.eyebrow != blank -%}
+      <div class="tee-serv__head" data-tee-reveal>
+        {%- if s.eyebrow != blank -%}<span class="tee-eyebrow tee-eyebrow--center">{{ s.eyebrow }}</span>{%- endif -%}
+        {%- if s.heading != blank -%}<h2 class="tee-display tee-serv__title">{{ s.heading }}</h2>{%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="tee-serv__grid" style="--tee-serv-cols: {{ s.columns }};">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <div class="tee-serv__item" data-tee-reveal style="--tee-reveal-delay: {{ forloop.index0 | times: 70 }}ms" {{ block.shopify_attributes }}>
+          {%- if b.image != blank -%}
+            <div class="tee-serv__thumb">{{ b.image | image_url: width: 700 | image_tag: widths: '250,450,700', sizes: '(min-width:750px) 30vw, 90vw', class: 'tee-serv__img', loading: 'lazy', alt: b.title | escape }}</div>
+          {%- elsif b.icon != 'none' -%}
+            <span class="tee-serv__icon" aria-hidden="true">{% render 'teeora-icon', name: b.icon %}</span>
+          {%- endif -%}
+          {%- if b.title != blank -%}<h3 class="tee-serv__item-title">{{ b.title }}</h3>{%- endif -%}
+          {%- if b.text != blank -%}<p class="tee-serv__text">{{ b.text }}</p>{%- endif -%}
+          {%- if b.link_label != blank -%}<a class="tee-link tee-serv__link" href="{{ b.link | default: '#' }}">{{ b.link_label }}</a>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-serv { background: var(--color-background); color: var(--color-foreground); padding-block: var(--tee-section-y); padding-inline: var(--tee-gutter); }
+  .tee-serv__wrap { max-width: 1500px; margin-inline: auto; }
+  .tee-serv__head { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: clamp(2.5rem,5vw,4rem); }
+  .tee-serv__title { font-size: clamp(1.8rem,3.6vw,3rem); }
+  .tee-serv__grid { display: grid; grid-template-columns: repeat(var(--tee-serv-cols,3), 1fr); gap: clamp(2rem,4vw,3.5rem) clamp(1.5rem,3vw,3rem); }
+  .tee-serv__item { display: flex; flex-direction: column; align-items: flex-start; gap: 0.85rem; }
+  .tee-serv__thumb { width: 100%; overflow: hidden; aspect-ratio: 4/3; margin-bottom: 0.5rem; }
+  .tee-serv__img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--tee-ease-luxe); }
+  .tee-serv__item:hover .tee-serv__img { transform: scale(1.04); }
+  .tee-serv__icon { display: inline-flex; width: 34px; height: 34px; }
+  .tee-serv__icon svg { width: 100%; height: 100%; }
+  .tee-serv__item-title { font-family: var(--tee-serif); font-weight: 500; font-size: clamp(1.1rem,1.6vw,1.35rem); letter-spacing: -0.01em; margin: 0; }
+  .tee-serv__text { font-family: var(--tee-sans); font-weight: 300; font-size: 0.92rem; line-height: 1.6; opacity: 0.8; margin: 0; max-width: 34ch; }
+  .tee-serv__link { margin-top: 0.35rem; }
+  @media screen and (max-width: 989px) { .tee-serv__grid { grid-template-columns: 1fr 1fr; } }
+  @media screen and (max-width: 749px) { .tee-serv__grid { grid-template-columns: 1fr; } .tee-serv__item { align-items: center; text-align: center; } .tee-serv__text { max-width: 40ch; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "TEEORA Services",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The House Services" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Considered from cart to <em>doorstep</em>" },
+    { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image (optional)" },
+        { "type": "select", "id": "icon", "label": "Line icon (if no image)", "options": [
+          {"value":"none","label":"None"}, {"value":"gift","label":"Gift"}, {"value":"calendar","label":"Calendar"}, {"value":"spark","label":"Spark"}, {"value":"truck","label":"Delivery"}, {"value":"leaf","label":"Leaf"}, {"value":"heart","label":"Heart"}
+        ], "default": "gift" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Complimentary gift wrapping" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Every order arrives wrapped in recycled tissue and sealed with the house mark." },
+        { "type": "text", "id": "link_label", "label": "Link label", "default": "Learn more" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "TEEORA Services",
+      "category": "TEEORA",
+      "blocks": [
+        { "type": "service", "settings": { "icon": "gift", "title": "Complimentary gift wrapping", "text": "Every order arrives wrapped in recycled tissue and sealed with the house mark.", "link_label": "Learn more" } },
+        { "type": "service", "settings": { "icon": "calendar", "title": "Private appointments", "text": "Book a one-to-one styling session, in person or online.", "link_label": "Book now" } },
+        { "type": "service", "settings": { "icon": "spark", "title": "Personalisation", "text": "Add a hand-finished monogram to your forever pieces.", "link_label": "Discover" } },
+        { "type": "service", "settings": { "icon": "truck", "title": "Free shipping & returns", "text": "Complimentary delivery and 30-day returns, worldwide.", "link_label": "Details" } },
+        { "type": "service", "settings": { "icon": "leaf", "title": "Climate committed", "text": "Carbon-neutral delivery and plastic-free packaging, always.", "link_label": "Our impact" } },
+        { "type": "service", "settings": { "icon": "heart", "title": "Cared-for clientele", "text": "A dedicated advisor for every question, every order.", "link_label": "Contact us" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

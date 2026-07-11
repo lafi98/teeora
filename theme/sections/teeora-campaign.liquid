@@ -1,0 +1,77 @@
+{%- comment -%}
+  TEEORA — Campaign statement
+  Large centered editorial paragraph with a lead line, followed by an
+  offset trio of campaign images. Word-by-word reveal on the statement.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section class="tee-camp color-{{ s.color_scheme }}">
+  <div class="tee-camp__wrap">
+    {%- if s.eyebrow != blank -%}<span class="tee-eyebrow tee-camp__eyebrow" data-tee-reveal>{{ s.eyebrow }}</span>{%- endif -%}
+    {%- if s.statement != blank -%}
+      <p class="tee-camp__statement" data-tee-reveal>{{ s.statement }}</p>
+    {%- endif -%}
+    {%- if s.button_label != blank -%}
+      <a class="tee-link tee-camp__link" data-tee-reveal href="{{ s.button_link | default: '#' }}">{{ s.button_label }}</a>
+    {%- endif -%}
+  </div>
+
+  {%- if s.image_1 != blank or s.image_2 != blank or s.image_3 != blank -%}
+    <div class="tee-camp__imgs">
+      <figure class="tee-camp__fig tee-camp__fig--1" data-tee-reveal>
+        {%- if s.image_1 != blank -%}{{ s.image_1 | image_url: width: 900 | image_tag: widths: '300,600,900', sizes: '30vw', class: 'tee-camp__img', loading: 'lazy', alt: '' }}{%- else -%}{{ 'lifestyle-1' | placeholder_svg_tag: 'tee-camp__img' }}{%- endif -%}
+      </figure>
+      <figure class="tee-camp__fig tee-camp__fig--2" data-tee-reveal style="--tee-reveal-delay:120ms">
+        {%- if s.image_2 != blank -%}{{ s.image_2 | image_url: width: 700 | image_tag: widths: '250,500,700', sizes: '24vw', class: 'tee-camp__img', loading: 'lazy', alt: '' }}{%- else -%}{{ 'lifestyle-2' | placeholder_svg_tag: 'tee-camp__img' }}{%- endif -%}
+      </figure>
+      <figure class="tee-camp__fig tee-camp__fig--3" data-tee-reveal style="--tee-reveal-delay:220ms">
+        {%- if s.image_3 != blank -%}{{ s.image_3 | image_url: width: 900 | image_tag: widths: '300,600,900', sizes: '30vw', class: 'tee-camp__img', loading: 'lazy', alt: '' }}{%- else -%}{{ 'lifestyle-1' | placeholder_svg_tag: 'tee-camp__img' }}{%- endif -%}
+      </figure>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .tee-camp { background: var(--color-background); color: var(--color-foreground); padding-block: var(--tee-section-y); padding-inline: var(--tee-gutter); }
+  .tee-camp__wrap { max-width: 940px; margin-inline: auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.75rem; }
+  .tee-camp__statement {
+    font-family: var(--tee-serif); font-weight: 400; letter-spacing: -0.015em;
+    font-size: clamp(1.5rem, 3.2vw, 2.7rem); line-height: 1.28; margin: 0; text-wrap: balance;
+  }
+  .tee-camp__statement em { font-style: italic; }
+  .tee-camp__imgs {
+    display: grid; grid-template-columns: repeat(12, 1fr); align-items: center;
+    gap: clamp(1rem,2.5vw,2rem); max-width: 1400px; margin: clamp(3rem,6vw,5rem) auto 0;
+  }
+  .tee-camp__fig { margin: 0; overflow: hidden; }
+  .tee-camp__fig--1 { grid-column: 1 / 5; aspect-ratio: 3/4; }
+  .tee-camp__fig--2 { grid-column: 5 / 9; aspect-ratio: 1/1; transform: translateY(-8%); }
+  .tee-camp__fig--3 { grid-column: 9 / 13; aspect-ratio: 3/4; transform: translateY(8%); }
+  .tee-camp__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @media screen and (max-width: 749px) {
+    .tee-camp__imgs { grid-template-columns: 1fr 1fr; }
+    .tee-camp__fig--1 { grid-column: 1/2; } .tee-camp__fig--2 { grid-column: 2/3; transform: none; } .tee-camp__fig--3 { grid-column: 1/3; aspect-ratio: 16/10; transform: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "TEEORA Campaign",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Campaign" },
+    { "type": "richtext", "id": "statement", "label": "Statement", "default": "<p>In the quiet hours before dawn, a garment becomes a second skin. This is <em>clothing as memory</em> — cut to move with you, made to remain.</p>" },
+    { "type": "text", "id": "button_label", "label": "Link label", "default": "Read the campaign" },
+    { "type": "url", "id": "button_link", "label": "Link" },
+    { "type": "image_picker", "id": "image_1", "label": "Image 1" },
+    { "type": "image_picker", "id": "image_2", "label": "Image 2 (center)" },
+    { "type": "image_picker", "id": "image_3", "label": "Image 3" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [ { "name": "TEEORA Campaign", "category": "TEEORA" } ]
+}
+{% endschema %}

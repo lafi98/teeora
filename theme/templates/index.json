@@ -1,83 +1,98 @@
 /*
- * TEEORA homepage — luxury editorial composition
- * Sections are modular (TEEORA * ) and fully editable in the theme editor.
+ * TEEORA homepage — full luxury editorial composition.
+ * All sections are modular ( TEEORA * ) and editable in the theme editor.
+ * Pacing alternates light / tinted / image / dark grounds for rhythm.
  */
 {
   "sections": {
     "hero": {
       "type": "teeora-hero",
       "settings": {
-        "overlay_opacity": 35,
-        "parallax": true,
+        "overlay_opacity": 35, "parallax": true,
         "eyebrow": "The Autumn Edit",
         "heading": "Quiet luxury, <em>considered</em> daily.",
         "body": "<p>Elevated essentials cut from natural fibres — designed to be worn, and kept, for years.</p>",
-        "button_label": "Explore the collection",
-        "button_link": "shopify://collections/all",
+        "button_label": "Explore the collection", "button_link": "shopify://collections/all",
         "button_2_label": "Discover the house",
-        "text_align": "flex-start",
-        "text_position": "flex-end",
-        "height": 92,
-        "show_scroll": true,
-        "scroll_label": "Scroll",
+        "text_align": "flex-start", "text_position": "flex-end",
+        "height": 92, "show_scroll": true, "scroll_label": "Scroll",
         "color_scheme": "scheme-6"
       }
     },
-    "marquee": {
+    "marquee_values": {
       "type": "teeora-marquee",
       "settings": {
         "items": "Considered design | Natural fibres | Made to last | Complimentary shipping | Carbon-neutral delivery",
-        "separator": "✦",
-        "serif": false,
-        "speed": 45,
-        "color_scheme": "scheme-1"
+        "separator": "✦", "serif": false, "speed": 46, "color_scheme": "scheme-1"
       }
+    },
+    "category_tiles": {
+      "type": "teeora-category-tiles",
+      "settings": { "eyebrow": "Explore", "heading": "Shop by <em>category</em>", "columns": 3, "color_scheme": "scheme-1" },
+      "blocks": {
+        "t1": { "type": "tile", "settings": { "kicker": "The Edit", "label": "Clothing", "link": "shopify://collections/all", "ratio": "3/4" } },
+        "t2": { "type": "tile", "settings": { "kicker": "Accessories", "label": "Bags", "link": "shopify://collections/all", "ratio": "3/4" } },
+        "t3": { "type": "tile", "settings": { "kicker": "Everything", "label": "Shop All", "link": "shopify://collections/all", "ratio": "3/4" } }
+      },
+      "block_order": ["t1", "t2", "t3"]
     },
     "collection_new": {
       "type": "teeora-collection",
       "settings": {
-        "collection": "all",
-        "eyebrow": "Newly Arrived",
-        "heading": "The season's <em>edit</em>",
-        "products_count": 4,
-        "columns": 4,
-        "quick_add": true,
-        "button_label": "View all",
-        "button_link": "shopify://collections/all",
-        "color_scheme": "scheme-1"
+        "collection": "all", "eyebrow": "Newly Arrived", "heading": "The season's <em>edit</em>",
+        "products_count": 4, "columns": 4, "quick_add": true,
+        "button_label": "View all", "button_link": "shopify://collections/all", "color_scheme": "scheme-1"
       }
     },
     "editorial": {
       "type": "teeora-editorial",
       "settings": {
-        "flip": false,
-        "index": "01",
-        "eyebrow": "The House",
+        "flip": false, "index": "01", "eyebrow": "The House",
         "heading": "A study in <em>restraint</em>.",
         "body": "<p>We design slowly and edit ruthlessly. Every piece earns its place through material, cut and longevity — never trend.</p>",
-        "button_label": "Read our story",
-        "color_scheme": "scheme-2"
+        "button_label": "Read our story", "color_scheme": "scheme-2"
       }
     },
-    "lookbook": {
-      "type": "teeora-lookbook",
+    "featured_product": {
+      "type": "teeora-featured-product",
+      "settings": { "flip": true, "eyebrow": "Piece of the Season", "show_description": true, "button_label": "Add to bag", "color_scheme": "scheme-1" }
+    },
+    "promo": {
+      "type": "teeora-promo",
       "settings": {
-        "caption": "Look 07 — The Atelier Coat",
-        "eyebrow": "Campaign",
-        "heading": "Light, <em>shadow</em>, form.",
-        "body": "<p>A seasonal study of silhouette and texture, photographed in natural light.</p>",
-        "button_label": "View the lookbook",
-        "color_scheme": "scheme-1"
+        "overlay_opacity": 42, "height": 62, "text_align": "center",
+        "eyebrow": "Members' Privilege", "heading": "Enjoy 10% off <em>your first order</em>",
+        "body": "<p>Subscribe to the house and receive a private welcome offer.</p>",
+        "code": "WELCOME10", "button_label": "Shop new arrivals", "button_link": "shopify://collections/all",
+        "color_scheme": "scheme-6"
       }
+    },
+    "film": {
+      "type": "teeora-film",
+      "settings": { "eyebrow": "In Motion", "heading": "Autumn <em>2026</em>", "columns": 4, "button_label": "Watch the film", "color_scheme": "scheme-1" },
+      "blocks": {
+        "f1": { "type": "tile", "settings": { "kicker": "Chapter I", "label": "The Atelier" } },
+        "f2": { "type": "tile", "settings": { "kicker": "Chapter II", "label": "Natural Light" } },
+        "f3": { "type": "tile", "settings": { "kicker": "Chapter III", "label": "The Fitting" } },
+        "f4": { "type": "tile", "settings": { "kicker": "Chapter IV", "label": "On Location" } }
+      },
+      "block_order": ["f1", "f2", "f3", "f4"]
+    },
+    "campaign": {
+      "type": "teeora-campaign",
+      "settings": {
+        "eyebrow": "The Campaign",
+        "statement": "<p>In the quiet hours before dawn, a garment becomes a second skin. This is <em>clothing as memory</em> — cut to move with you, made to remain.</p>",
+        "button_label": "Read the campaign", "color_scheme": "scheme-2"
+      }
+    },
+    "image_break": {
+      "type": "teeora-image-break",
+      "settings": { "overlay_opacity": 28, "height": 74, "quote": "Elegance is refusal.", "attribution": "The TEEORA Ethos", "color_scheme": "scheme-6" }
     },
     "story": {
       "type": "teeora-story",
-      "settings": {
-        "eyebrow": "Our Promise",
-        "heading": "Made with <em>intention</em>.",
-        "body": "<p>Four principles guide everything we make.</p>",
-        "color_scheme": "scheme-5"
-      },
+      "settings": { "eyebrow": "Our Promise", "heading": "Made with <em>intention</em>.", "body": "<p>Four principles guide everything we make.</p>", "color_scheme": "scheme-5" },
       "blocks": {
         "p1": { "type": "pillar", "settings": { "title": "Natural materials", "text": "Organic cotton, responsible wool and linen — traceable to source." } },
         "p2": { "type": "pillar", "settings": { "title": "Considered craft", "text": "Small-batch production with makers we know by name." } },
@@ -86,42 +101,72 @@
       },
       "block_order": ["p1", "p2", "p3", "p4"]
     },
+    "marquee_brand": {
+      "type": "teeora-marquee",
+      "settings": { "items": "TEEORA", "separator": "✦", "serif": true, "speed": 55, "color_scheme": "scheme-1" }
+    },
     "collection_best": {
       "type": "teeora-collection",
       "settings": {
-        "collection": "all",
-        "eyebrow": "Most Wanted",
-        "heading": "Signature <em>pieces</em>",
-        "products_count": 4,
-        "columns": 4,
-        "quick_add": true,
-        "button_label": "Shop best sellers",
-        "button_link": "shopify://collections/all",
-        "color_scheme": "scheme-1"
+        "collection": "all", "eyebrow": "Most Wanted", "heading": "Signature <em>pieces</em>",
+        "products_count": 4, "columns": 4, "quick_add": true,
+        "button_label": "Shop best sellers", "button_link": "shopify://collections/all", "color_scheme": "scheme-1"
       }
+    },
+    "journal": {
+      "type": "teeora-journal",
+      "settings": { "eyebrow": "The Journal", "heading": "Notes from the <em>house</em>", "blog": "news", "count": 3, "show_excerpt": true, "button_label": "All stories", "color_scheme": "scheme-2" }
+    },
+    "services": {
+      "type": "teeora-services",
+      "settings": { "eyebrow": "The House Services", "heading": "Considered from cart to <em>doorstep</em>", "columns": 3, "color_scheme": "scheme-1" },
+      "blocks": {
+        "s1": { "type": "service", "settings": { "icon": "gift", "title": "Complimentary gift wrapping", "text": "Every order arrives wrapped in recycled tissue and sealed with the house mark.", "link_label": "Learn more" } },
+        "s2": { "type": "service", "settings": { "icon": "calendar", "title": "Private appointments", "text": "Book a one-to-one styling session, in person or online.", "link_label": "Book now" } },
+        "s3": { "type": "service", "settings": { "icon": "spark", "title": "Personalisation", "text": "Add a hand-finished monogram to your forever pieces.", "link_label": "Discover" } },
+        "s4": { "type": "service", "settings": { "icon": "truck", "title": "Free shipping & returns", "text": "Complimentary delivery and 30-day returns, worldwide.", "link_label": "Details" } },
+        "s5": { "type": "service", "settings": { "icon": "leaf", "title": "Climate committed", "text": "Carbon-neutral delivery and plastic-free packaging, always.", "link_label": "Our impact" } },
+        "s6": { "type": "service", "settings": { "icon": "heart", "title": "Cared-for clientele", "text": "A dedicated advisor for every question, every order.", "link_label": "Contact us" } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4", "s5", "s6"]
     },
     "newsletter": {
       "type": "teeora-newsletter",
       "settings": {
-        "eyebrow": "The List",
-        "heading": "Join the <em>inner circle</em>",
+        "eyebrow": "The List", "heading": "Join the <em>inner circle</em>",
         "body": "<p>Early access to collections, private events and considered stories. No noise.</p>",
-        "placeholder": "Your email address",
-        "button_label": "Subscribe",
+        "placeholder": "Your email address", "button_label": "Subscribe",
         "success_message": "Welcome. Please confirm via the email we just sent.",
         "footnote": "By subscribing you agree to our Privacy Policy. Unsubscribe anytime.",
         "color_scheme": "scheme-2"
       }
+    },
+    "ugc": {
+      "type": "teeora-ugc",
+      "settings": { "eyebrow": "Community", "heading": "Worn by <em>you</em>", "handle": "@teeora", "columns": 5, "color_scheme": "scheme-1" },
+      "blocks": {
+        "u1": { "type": "photo" }, "u2": { "type": "photo" }, "u3": { "type": "photo" }, "u4": { "type": "photo" }, "u5": { "type": "photo" }
+      },
+      "block_order": ["u1", "u2", "u3", "u4", "u5"]
     }
   },
   "order": [
     "hero",
-    "marquee",
+    "marquee_values",
+    "category_tiles",
     "collection_new",
     "editorial",
-    "lookbook",
+    "featured_product",
+    "promo",
+    "film",
+    "campaign",
+    "image_break",
     "story",
+    "marquee_brand",
     "collection_best",
-    "newsletter"
+    "journal",
+    "services",
+    "newsletter",
+    "ugc"
   ]
 }

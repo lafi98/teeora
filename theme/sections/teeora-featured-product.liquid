@@ -1,0 +1,158 @@
+{%- comment -%}
+  TEEORA — Featured Product spotlight
+  A single product presented editorially: gallery with thumbnails,
+  serif title, live price, variant select, add-to-cart. JS-light and
+  works without JS (native product form).
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign product = all_products[s.product]
+  assign uid = section.id
+-%}
+
+<section class="tee-fp color-{{ s.color_scheme }}" data-flip="{{ s.flip }}">
+  <div class="tee-fp__grid">
+    <div class="tee-fp__gallery" data-tee-reveal>
+      {%- if product != blank and product.images.size > 0 -%}
+        <div class="tee-fp__main">
+          <img
+            id="tee-fp-main-{{ uid }}"
+            src="{{ product.featured_image | image_url: width: 1200 }}"
+            width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}"
+            alt="{{ product.featured_image.alt | default: product.title | escape }}"
+            class="tee-fp__img" loading="lazy"
+          >
+        </div>
+        {%- if product.images.size > 1 -%}
+          <div class="tee-fp__thumbs">
+            {%- for image in product.images limit: 5 -%}
+              <button type="button" class="tee-fp__thumb{% if forloop.first %} is-active{% endif %}" data-src="{{ image | image_url: width: 1200 }}" data-target="tee-fp-main-{{ uid }}" aria-label="View image {{ forloop.index }}">
+                {{ image | image_url: width: 200 | image_tag: widths: '120,200', sizes: '80px', loading: 'lazy', alt: '' }}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      {%- else -%}
+        <div class="tee-fp__main">{{ 'product-1' | placeholder_svg_tag: 'tee-fp__img' }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="tee-fp__info" data-tee-reveal style="--tee-reveal-delay:120ms">
+      {%- if s.eyebrow != blank -%}<span class="tee-eyebrow">{{ s.eyebrow }}</span>{%- endif -%}
+      <h2 class="tee-display tee-fp__title">{{ product.title | default: 'Featured piece' }}</h2>
+
+      {%- if product != blank -%}
+        <div class="tee-fp__price" id="tee-fp-price-{{ uid }}">
+          {%- if product.compare_at_price > product.price -%}
+            <span class="tee-fp__price-sale">{{ product.price | money }}</span>
+            <s class="tee-fp__price-was">{{ product.compare_at_price | money }}</s>
+          {%- else -%}{{ product.price | money }}{%- endif -%}
+        </div>
+
+        {%- if s.show_description and product.description != blank -%}
+          <div class="tee-fp__desc">{{ product.description | strip_html | truncatewords: 40 }}</div>
+        {%- endif -%}
+
+        {%- form 'product', product, id: 'tee-fp-form-' | append: uid, class: 'tee-fp__form' -%}
+          {%- unless product.has_only_default_variant -%}
+            <div class="tee-fp__variants">
+              <label class="tee-fp__label" for="tee-fp-select-{{ uid }}">Select option</label>
+              <select name="id" id="tee-fp-select-{{ uid }}" class="tee-fp__select" data-price-target="tee-fp-price-{{ uid }}">
+                {%- for variant in product.variants -%}
+                  <option value="{{ variant.id }}" data-price="{{ variant.price | money }}" {% unless variant.available %}disabled{% endunless %}>
+                    {{ variant.title }}{% unless variant.available %} — Sold out{% endunless %}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- else -%}
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          {%- endunless -%}
+
+          <button type="submit" name="add" class="tee-fp__add" {% unless product.available %}disabled{% endunless %}>
+            <span>{% if product.available %}{{ s.button_label }}{% else %}Sold out{% endif %}</span>
+          </button>
+        {%- endform -%}
+
+        <a class="tee-link tee-fp__view" href="{{ product.url }}">Full details</a>
+      {%- else -%}
+        <p class="tee-fp__empty">Select a product in the section settings to feature it here.</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-fp { background: var(--color-background); color: var(--color-foreground); padding-block: var(--tee-section-y); padding-inline: var(--tee-gutter); }
+  .tee-fp__grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem,5vw,5rem); align-items: center; max-width: 1500px; margin-inline: auto; }
+  .tee-fp[data-flip="true"] .tee-fp__gallery { order: 2; }
+  .tee-fp__main { overflow: hidden; aspect-ratio: 4/5; background: var(--tee-cream); }
+  .tee-fp__img { width: 100%; height: 100%; object-fit: cover; }
+  .tee-fp__thumbs { display: flex; gap: 0.6rem; margin-top: 0.75rem; }
+  .tee-fp__thumb { width: 64px; height: 80px; padding: 0; border: 1px solid transparent; background: none; cursor: pointer; overflow: hidden; opacity: 0.6; transition: opacity 0.3s, border-color 0.3s; }
+  .tee-fp__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .tee-fp__thumb.is-active, .tee-fp__thumb:hover { opacity: 1; border-color: var(--color-foreground); }
+  .tee-fp__info { max-width: 42ch; display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+  .tee-fp__title { font-size: clamp(1.9rem, 3.4vw, 3rem); }
+  .tee-fp__price { font-family: var(--tee-sans); font-size: 1.1rem; letter-spacing: 0.02em; display: inline-flex; gap: 0.6rem; }
+  .tee-fp__price-sale { color: var(--tee-champagne); }
+  .tee-fp__price-was { opacity: 0.5; }
+  .tee-fp__desc { font-family: var(--tee-sans); font-weight: 300; font-size: 0.98rem; line-height: 1.65; opacity: 0.82; }
+  .tee-fp__form { width: 100%; display: flex; flex-direction: column; gap: 1rem; }
+  .tee-fp__label { font-family: var(--tee-sans); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; display: block; margin-bottom: 0.5rem; }
+  .tee-fp__select { width: 100%; padding: 0.9rem 1rem; font-family: var(--tee-sans); font-size: 0.95rem; background: transparent; color: inherit; border: 1px solid var(--color-border, var(--tee-line)); border-radius: 0; }
+  .tee-fp__add {
+    width: 100%; padding: 1.1rem 1.5rem; cursor: pointer;
+    font-family: var(--tee-sans); font-weight: 500; font-size: 0.76rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--color-background); background: var(--color-foreground); border: 1px solid var(--color-foreground);
+    transition: opacity 0.4s var(--tee-ease);
+  }
+  .tee-fp__add:hover { opacity: 0.85; }
+  .tee-fp__add:disabled { opacity: 0.4; cursor: not-allowed; }
+  @media screen and (max-width: 749px) {
+    .tee-fp__grid { grid-template-columns: 1fr; gap: 2rem; }
+    .tee-fp[data-flip="true"] .tee-fp__gallery { order: 0; }
+    .tee-fp__info { max-width: 100%; }
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    var root = document.currentScript.closest('.tee-fp');
+    if (!root) return;
+    /* Thumbnail → main image swap */
+    root.querySelectorAll('.tee-fp__thumb').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var main = document.getElementById(btn.dataset.target);
+        if (main) main.src = btn.dataset.src;
+        root.querySelectorAll('.tee-fp__thumb').forEach(function (t) { t.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+      });
+    });
+    /* Variant select → live price */
+    var sel = root.querySelector('.tee-fp__select');
+    if (sel) sel.addEventListener('change', function () {
+      var opt = sel.options[sel.selectedIndex];
+      var target = document.getElementById(sel.dataset.priceTarget);
+      if (opt && target && opt.dataset.price) target.textContent = opt.dataset.price;
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "TEEORA Featured Product",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "checkbox", "id": "flip", "label": "Gallery on right", "default": false },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Piece of the Season" },
+    { "type": "checkbox", "id": "show_description", "label": "Show description", "default": true },
+    { "type": "text", "id": "button_label", "label": "Add-to-cart label", "default": "Add to bag" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" }
+  ],
+  "presets": [ { "name": "TEEORA Featured Product", "category": "TEEORA" } ]
+}
+{% endschema %}

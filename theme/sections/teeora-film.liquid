@@ -1,0 +1,102 @@
+{%- comment -%}
+  TEEORA — Film / Lookbook grid
+  Row of portrait video/image tiles (campaign / behind-the-scenes).
+  Block-driven; videos autoplay muted & loop.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section class="tee-film color-{{ s.color_scheme }}">
+  <div class="tee-film__head" data-tee-reveal>
+    <div class="tee-film__head-left">
+      {%- if s.eyebrow != blank -%}<span class="tee-eyebrow">{{ s.eyebrow }}</span>{%- endif -%}
+      {%- if s.heading != blank -%}<h2 class="tee-display tee-film__title">{{ s.heading }}</h2>{%- endif -%}
+    </div>
+    {%- if s.button_label != blank -%}<a class="tee-link" href="{{ s.button_link | default: '#' }}">{{ s.button_label }}</a>{%- endif -%}
+  </div>
+
+  <div class="tee-film__grid" style="--tee-film-cols: {{ s.columns }};">
+    {%- for block in section.blocks -%}
+      {%- assign b = block.settings -%}
+      <a class="tee-film__tile" href="{{ b.link | default: '#' }}" data-tee-reveal style="--tee-reveal-delay: {{ forloop.index0 | times: 80 }}ms" {{ block.shopify_attributes }}>
+        <div class="tee-film__media">
+          {%- if b.video != blank -%}
+            {{ b.video | video_tag: image_size: '600x', autoplay: true, loop: true, muted: true, controls: false, class: 'tee-film__vid' }}
+          {%- elsif b.image != blank -%}
+            {{ b.image | image_url: width: 900 | image_tag: widths: '300,500,700,900', sizes: '(min-width:750px) 25vw, 70vw', class: 'tee-film__img', loading: 'lazy', alt: b.label | escape }}
+          {%- else -%}{{ 'lifestyle-1' | placeholder_svg_tag: 'tee-film__img' }}{%- endif -%}
+          <span class="tee-film__scrim"></span>
+          {%- if b.video != blank -%}<span class="tee-film__play" aria-hidden="true">▶</span>{%- endif -%}
+        </div>
+        {%- if b.label != blank or b.kicker != blank -%}
+          <div class="tee-film__cap">
+            {%- if b.kicker != blank -%}<span class="tee-film__kicker">{{ b.kicker }}</span>{%- endif -%}
+            {%- if b.label != blank -%}<span class="tee-film__label">{{ b.label }}</span>{%- endif -%}
+          </div>
+        {%- endif -%}
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-film { background: var(--color-background); color: var(--color-foreground); padding-block: var(--tee-section-y); padding-inline: var(--tee-gutter); }
+  .tee-film__head { max-width: 1600px; margin: 0 auto clamp(2rem,4vw,3rem); display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; }
+  .tee-film__head-left { display: flex; flex-direction: column; gap: 1rem; }
+  .tee-film__title { font-size: clamp(1.8rem, 3.6vw, 3rem); }
+  .tee-film__grid { display: grid; grid-template-columns: repeat(var(--tee-film-cols,4), 1fr); gap: clamp(0.75rem,1.5vw,1.25rem); max-width: 1600px; margin-inline: auto; }
+  .tee-film__tile { display: block; text-decoration: none; color: var(--tee-bone); }
+  .tee-film__media { position: relative; overflow: hidden; aspect-ratio: 3/4; background: var(--tee-cream); }
+  .tee-film__img, .tee-film__vid { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--tee-ease-luxe); }
+  .tee-film__tile:hover .tee-film__img, .tee-film__tile:hover .tee-film__vid { transform: scale(1.05); }
+  .tee-film__scrim { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(10,8,6,0.5)); }
+  .tee-film__play { position: absolute; top: 1rem; right: 1rem; font-size: 0.7rem; opacity: 0.85; }
+  .tee-film__cap { padding-top: 0.9rem; display: flex; flex-direction: column; gap: 0.25rem; color: var(--color-foreground); }
+  .tee-film__kicker { font-family: var(--tee-sans); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
+  .tee-film__label { font-family: var(--tee-serif); font-size: 1.05rem; font-weight: 400; }
+  @media screen and (max-width: 749px) { .tee-film__grid { grid-template-columns: 1fr 1fr; } .tee-film__head { align-items: flex-start; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "TEEORA Film",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "In Motion" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Autumn <em>2026</em>" },
+    { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "text", "id": "button_label", "label": "Link label", "default": "Watch the film" },
+    { "type": "url", "id": "button_link", "label": "Link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Tile",
+      "settings": [
+        { "type": "video", "id": "video", "label": "Video (autoplay, muted)" },
+        { "type": "image_picker", "id": "image", "label": "Image (if no video)" },
+        { "type": "text", "id": "kicker", "label": "Kicker", "default": "Chapter" },
+        { "type": "text", "id": "label", "label": "Label", "default": "The Atelier" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "TEEORA Film",
+      "category": "TEEORA",
+      "blocks": [
+        { "type": "tile", "settings": { "kicker": "Chapter I", "label": "The Atelier" } },
+        { "type": "tile", "settings": { "kicker": "Chapter II", "label": "Natural Light" } },
+        { "type": "tile", "settings": { "kicker": "Chapter III", "label": "The Fitting" } },
+        { "type": "tile", "settings": { "kicker": "Chapter IV", "label": "On Location" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

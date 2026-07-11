@@ -1,0 +1,69 @@
+{%- comment -%}
+  TEEORA — Full-width Image Break
+  Cinematic full-bleed image with parallax and an optional serif quote.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section class="tee-break color-{{ s.color_scheme }}" style="--tee-break-h: {{ s.height }}svh; --tee-break-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};">
+  <div class="tee-break__media" data-tee-break-media>
+    {%- if s.image != blank -%}
+      {{ s.image | image_url: width: 2600 | image_tag: widths: '900,1400,1900,2400,2600', sizes: '100vw', class: 'tee-break__img', loading: 'lazy', alt: s.image.alt | default: '' }}
+    {%- else -%}{{ 'lifestyle-2' | placeholder_svg_tag: 'tee-break__img' }}{%- endif -%}
+    <span class="tee-break__overlay"></span>
+  </div>
+  {%- if s.quote != blank -%}
+    <div class="tee-break__inner">
+      <blockquote class="tee-break__quote" data-tee-reveal>{{ s.quote }}</blockquote>
+      {%- if s.attribution != blank -%}<cite class="tee-break__cite" data-tee-reveal style="--tee-reveal-delay:120ms">{{ s.attribution }}</cite>{%- endif -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .tee-break { position: relative; min-height: var(--tee-break-h, 70svh); display: flex; align-items: center; justify-content: center; overflow: hidden; isolation: isolate; color: var(--color-foreground, #fff); }
+  .tee-break__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+  .tee-break__img { width: 100%; height: 120%; object-fit: cover; will-change: transform; }
+  .tee-break__overlay { position: absolute; inset: 0; background: rgba(10,8,6,1); opacity: var(--tee-break-overlay, 0.25); }
+  .tee-break__inner { position: relative; z-index: 1; text-align: center; padding: var(--tee-gutter); max-width: 24ch; }
+  .tee-break__quote { font-family: var(--tee-serif); font-weight: 500; font-style: italic; font-size: clamp(1.6rem, 3.4vw, 3rem); line-height: 1.15; letter-spacing: -0.01em; margin: 0; }
+  .tee-break__cite { display: block; margin-top: 1.25rem; font-family: var(--tee-sans); font-style: normal; font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase; opacity: 0.8; }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var root = document.currentScript.closest('.tee-break');
+    var img = root.querySelector('.tee-break__img');
+    if (!img) return;
+    var ticking = false;
+    function update() {
+      var rect = root.getBoundingClientRect();
+      var vh = window.innerHeight || 1;
+      var p = (rect.top + rect.height / 2 - vh / 2) / vh;
+      img.style.transform = 'translate3d(0,' + (p * -8).toFixed(2) + '%,0)';
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () { if (!ticking) { requestAnimationFrame(update); ticking = true; } }, { passive: true });
+    update();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "TEEORA Image Break",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay darkness", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 25 },
+    { "type": "range", "id": "height", "label": "Height", "min": 40, "max": 100, "step": 1, "unit": "vh", "default": 72 },
+    { "type": "inline_richtext", "id": "quote", "label": "Quote (optional)", "default": "Elegance is refusal." },
+    { "type": "text", "id": "attribution", "label": "Attribution", "default": "The TEEORA Ethos" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-6" }
+  ],
+  "presets": [ { "name": "TEEORA Image Break", "category": "TEEORA" } ]
+}
+{% endschema %}

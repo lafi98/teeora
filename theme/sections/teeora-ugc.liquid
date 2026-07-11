@@ -1,0 +1,77 @@
+{%- comment -%}
+  TEEORA — UGC / Instagram grid
+  Social-proof gallery. Block-driven images with optional links.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section class="tee-ugc color-{{ s.color_scheme }}">
+  <div class="tee-ugc__head" data-tee-reveal>
+    {%- if s.eyebrow != blank -%}<span class="tee-eyebrow tee-eyebrow--center">{{ s.eyebrow }}</span>{%- endif -%}
+    {%- if s.heading != blank -%}<h2 class="tee-display tee-ugc__title">{{ s.heading }}</h2>{%- endif -%}
+    {%- if s.handle != blank -%}<a class="tee-link tee-ugc__handle" href="{{ s.handle_link | default: '#' }}">{{ s.handle }}</a>{%- endif -%}
+  </div>
+
+  <div class="tee-ugc__grid" style="--tee-ugc-cols: {{ s.columns }};">
+    {%- for block in section.blocks -%}
+      {%- assign b = block.settings -%}
+      {%- if b.link != blank -%}
+        <a class="tee-ugc__cell" href="{{ b.link }}" target="_blank" rel="noopener" data-tee-reveal style="--tee-reveal-delay: {{ forloop.index0 | times: 50 }}ms" {{ block.shopify_attributes }}>
+      {%- else -%}
+        <div class="tee-ugc__cell" data-tee-reveal style="--tee-reveal-delay: {{ forloop.index0 | times: 50 }}ms" {{ block.shopify_attributes }}>
+      {%- endif -%}
+        {%- if b.image != blank -%}
+          {{ b.image | image_url: width: 700 | image_tag: widths: '200,350,500,700', sizes: '(min-width:750px) 20vw, 50vw', class: 'tee-ugc__img', loading: 'lazy', alt: 'Community photo' }}
+        {%- else -%}{{ 'image' | placeholder_svg_tag: 'tee-ugc__img' }}{%- endif -%}
+        <span class="tee-ugc__mark" aria-hidden="true">{% render 'teeora-icon', name: 'spark' %}</span>
+      {%- if b.link != blank -%}</a>{%- else -%}</div>{%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-ugc { background: var(--color-background); color: var(--color-foreground); padding-block: var(--tee-section-y); padding-inline: var(--tee-gutter); }
+  .tee-ugc__head { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; margin-bottom: clamp(2rem,4vw,3rem); }
+  .tee-ugc__title { font-size: clamp(1.8rem,3.6vw,3rem); }
+  .tee-ugc__grid { display: grid; grid-template-columns: repeat(var(--tee-ugc-cols,5), 1fr); gap: clamp(0.5rem,1vw,0.85rem); max-width: 1600px; margin-inline: auto; }
+  .tee-ugc__cell { position: relative; display: block; overflow: hidden; aspect-ratio: 1/1; background: var(--tee-cream); }
+  .tee-ugc__img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--tee-ease-luxe); }
+  .tee-ugc__cell:hover .tee-ugc__img { transform: scale(1.07); }
+  .tee-ugc__mark { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; width: 24px; height: 24px; margin: auto; opacity: 0; transition: opacity 0.4s var(--tee-ease); }
+  .tee-ugc__cell:hover .tee-ugc__mark { opacity: 0.9; }
+  @media screen and (max-width: 749px) { .tee-ugc__grid { grid-template-columns: repeat(3, 1fr); } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "TEEORA UGC",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Community" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Worn by <em>you</em>" },
+    { "type": "text", "id": "handle", "label": "Handle", "default": "@teeora" },
+    { "type": "url", "id": "handle_link", "label": "Handle link" },
+    { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 3, "max": 6, "step": 1, "default": 5 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    { "type": "photo", "name": "Photo", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image" },
+      { "type": "url", "id": "link", "label": "Link (optional)" }
+    ] }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "TEEORA UGC",
+      "category": "TEEORA",
+      "blocks": [
+        { "type": "photo" }, { "type": "photo" }, { "type": "photo" }, { "type": "photo" }, { "type": "photo" }
+      ]
+    }
+  ]
+}
+{% endschema %}

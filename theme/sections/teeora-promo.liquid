@@ -1,0 +1,91 @@
+{%- comment -%}
+  TEEORA — Promo / Offer band
+  Editorial offer banner: image ground, overlay statement, optional
+  discount code chip + CTA. Shorter than the hero.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section class="tee-promo color-{{ s.color_scheme }}" style="--tee-promo-h: {{ s.height }}svh; --tee-promo-overlay: {{ s.overlay_opacity | divided_by: 100.0 }}; --tee-promo-justify: {{ s.text_align }};">
+  <div class="tee-promo__media">
+    {%- if s.image != blank -%}
+      {{ s.image | image_url: width: 2400 | image_tag: widths: '750,1100,1600,2000,2400', sizes: '100vw', class: 'tee-promo__img', loading: 'lazy', alt: s.image.alt | default: s.heading | strip_html }}
+    {%- else -%}{{ 'lifestyle-1' | placeholder_svg_tag: 'tee-promo__img' }}{%- endif -%}
+    <span class="tee-promo__overlay"></span>
+  </div>
+  <div class="tee-promo__inner">
+    <div class="tee-promo__content" data-tee-reveal>
+      {%- if s.eyebrow != blank -%}<span class="tee-eyebrow">{{ s.eyebrow }}</span>{%- endif -%}
+      {%- if s.heading != blank -%}<h2 class="tee-display tee-promo__heading">{{ s.heading }}</h2>{%- endif -%}
+      {%- if s.body != blank -%}<div class="tee-lede tee-promo__lede">{{ s.body }}</div>{%- endif -%}
+      <div class="tee-promo__actions">
+        {%- if s.code != blank -%}<span class="tee-promo__code" data-tee-copy="{{ s.code | escape }}" role="button" tabindex="0" title="Copy code">{{ s.code }}</span>{%- endif -%}
+        {%- if s.button_label != blank -%}<a class="tee-btn tee-btn--light" href="{{ s.button_link | default: '#' }}">{{ s.button_label }}</a>{%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-promo { position: relative; min-height: var(--tee-promo-h, 62svh); display: flex; overflow: hidden; isolation: isolate; color: var(--color-foreground, #fff); }
+  .tee-promo__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+  .tee-promo__img { width: 100%; height: 100%; object-fit: cover; }
+  .tee-promo__overlay { position: absolute; inset: 0; background: rgba(10,8,6,1); opacity: var(--tee-promo-overlay, 0.4); }
+  .tee-promo__inner { position: relative; z-index: 1; width: 100%; display: flex; align-items: center; justify-content: var(--tee-promo-justify, center); padding: clamp(2.5rem,6vw,5rem) var(--tee-gutter); }
+  .tee-promo__content { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.3rem; max-width: 40ch; }
+  .tee-promo__inner[style*="flex-start"] .tee-promo__content { align-items: flex-start; text-align: left; }
+  .tee-promo__heading { font-size: clamp(2.2rem, 5vw, 4.2rem); }
+  .tee-promo__lede { margin: 0; }
+  .tee-promo__actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; margin-top: 0.5rem; }
+  .tee-promo__code {
+    font-family: var(--tee-sans); font-size: 0.74rem; letter-spacing: 0.22em; text-transform: uppercase;
+    padding: 0.9rem 1.4rem; border: 1px dashed currentColor; cursor: pointer; position: relative;
+  }
+  .tee-promo__code::after { content: "Copied"; position: absolute; inset: 0; display: grid; place-items: center; background: currentColor; color: var(--tee-ink); opacity: 0; transition: opacity 0.3s; }
+  .tee-promo__code.is-copied::after { opacity: 1; }
+  @media screen and (max-width: 749px) {
+    .tee-promo__content { align-items: center !important; text-align: center !important; }
+    .tee-promo__actions { flex-direction: column; width: 100%; }
+    .tee-promo__actions .tee-btn { width: 100%; }
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    var root = document.currentScript.closest('.tee-promo');
+    var chip = root && root.querySelector('[data-tee-copy]');
+    if (!chip) return;
+    function copy() {
+      var code = chip.getAttribute('data-tee-copy');
+      if (navigator.clipboard) navigator.clipboard.writeText(code).catch(function(){});
+      chip.classList.add('is-copied');
+      setTimeout(function () { chip.classList.remove('is-copied'); }, 1400);
+    }
+    chip.addEventListener('click', copy);
+    chip.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copy(); } });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "TEEORA Promo",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay darkness", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 40 },
+    { "type": "range", "id": "height", "label": "Height", "min": 40, "max": 90, "step": 1, "unit": "vh", "default": 62 },
+    { "type": "select", "id": "text_align", "label": "Alignment", "options": [ {"value":"center","label":"Center"}, {"value":"flex-start","label":"Left"} ], "default": "center" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Members' Privilege" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Enjoy 10% off <em>your first order</em>" },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Subscribe to the house and receive a private welcome offer.</p>" },
+    { "type": "text", "id": "code", "label": "Discount code (optional)", "default": "WELCOME10" },
+    { "type": "text", "id": "button_label", "label": "Button", "default": "Shop new arrivals" },
+    { "type": "url", "id": "button_link", "label": "Link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-6" }
+  ],
+  "presets": [ { "name": "TEEORA Promo", "category": "TEEORA" } ]
+}
+{% endschema %}

@@ -1,0 +1,117 @@
+{%- comment -%}
+  TEEORA — Category Tiles ("Shop by")
+  Block-driven editorial tiles over imagery. Hover zoom + label lift.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section class="tee-cats color-{{ s.color_scheme }}">
+  {%- if s.heading != blank or s.eyebrow != blank -%}
+    <div class="tee-cats__head" data-tee-reveal>
+      {%- if s.eyebrow != blank -%}<span class="tee-eyebrow">{{ s.eyebrow }}</span>{%- endif -%}
+      {%- if s.heading != blank -%}<h2 class="tee-display tee-cats__title">{{ s.heading }}</h2>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="tee-cats__grid" style="--tee-cats-cols: {{ s.columns }};">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign b = block.settings
+        assign link = b.link
+        if b.collection != blank and link == blank
+          assign link = collections[b.collection].url
+        endif
+        assign img = b.image
+        if img == blank and b.collection != blank
+          assign img = collections[b.collection].featured_image
+        endif
+      -%}
+      <a class="tee-cat" href="{{ link | default: '#' }}" data-tee-reveal style="--tee-reveal-delay: {{ forloop.index0 | times: 80 }}ms" {{ block.shopify_attributes }}>
+        <div class="tee-cat__media" style="--tee-cat-ratio: {{ b.ratio }};">
+          {%- if img != blank -%}
+            {{ img | image_url: width: 1200 | image_tag: widths: '400,600,900,1200', sizes: '(min-width:750px) 33vw, 100vw', class: 'tee-cat__img', loading: 'lazy', alt: b.label | escape }}
+          {%- else -%}
+            {{ 'collection-' | append: forloop.index | placeholder_svg_tag: 'tee-cat__img' }}
+          {%- endif -%}
+          <span class="tee-cat__scrim"></span>
+        </div>
+        <div class="tee-cat__label">
+          {%- if b.kicker != blank -%}<span class="tee-cat__kicker">{{ b.kicker }}</span>{%- endif -%}
+          <span class="tee-cat__name">{{ b.label }}<span class="tee-cat__arrow" aria-hidden="true">→</span></span>
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .tee-cats {
+    background: var(--color-background); color: var(--color-foreground);
+    padding-block: var(--tee-section-y); padding-inline: var(--tee-gutter);
+  }
+  .tee-cats__head { max-width: 1600px; margin: 0 auto clamp(2rem,4vw,3rem); display: flex; flex-direction: column; gap: 1rem; }
+  .tee-cats__title { font-size: clamp(1.8rem, 3.6vw, 3rem); }
+  .tee-cats__grid {
+    display: grid; grid-template-columns: repeat(var(--tee-cats-cols,3), 1fr);
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    max-width: 1600px; margin-inline: auto;
+  }
+  .tee-cat { position: relative; display: block; color: var(--tee-bone); text-decoration: none; overflow: hidden; }
+  .tee-cat__media { position: relative; overflow: hidden; aspect-ratio: var(--tee-cat-ratio, 3/4); background: var(--tee-cream); }
+  .tee-cat__img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--tee-ease-luxe); }
+  .tee-cat:hover .tee-cat__img { transform: scale(1.06); }
+  .tee-cat__scrim { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(10,8,6,0.55) 100%); }
+  .tee-cat__label { position: absolute; left: clamp(1rem,2vw,1.6rem); bottom: clamp(1rem,2vw,1.6rem); right: 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .tee-cat__kicker { font-family: var(--tee-sans); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0.85; }
+  .tee-cat__name {
+    font-family: var(--tee-serif); font-size: clamp(1.1rem, 1.8vw, 1.6rem); font-weight: 500; letter-spacing: -0.01em;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+  }
+  .tee-cat__arrow { transition: transform 0.5s var(--tee-ease); display: inline-block; }
+  .tee-cat:hover .tee-cat__arrow { transform: translateX(6px); }
+  @media screen and (max-width: 749px) {
+    .tee-cats__grid { grid-template-columns: 1fr 1fr; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "TEEORA Category Tiles",
+  "tag": "section",
+  "class": "tee-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Explore" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Shop by <em>category</em>" },
+    { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Tile",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection", "info": "Used for the link & fallback image." },
+        { "type": "image_picker", "id": "image", "label": "Image (overrides collection image)" },
+        { "type": "url", "id": "link", "label": "Custom link (optional)" },
+        { "type": "text", "id": "kicker", "label": "Kicker", "default": "The Edit" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Clothing" },
+        { "type": "select", "id": "ratio", "label": "Ratio", "options": [ {"value":"3/4","label":"Portrait"}, {"value":"4/5","label":"Tall"}, {"value":"1/1","label":"Square"} ], "default": "3/4" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "TEEORA Category Tiles",
+      "category": "TEEORA",
+      "blocks": [
+        { "type": "tile", "settings": { "kicker": "The Edit", "label": "Clothing" } },
+        { "type": "tile", "settings": { "kicker": "Accessories", "label": "Bags" } },
+        { "type": "tile", "settings": { "kicker": "Everything", "label": "Shop All" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
