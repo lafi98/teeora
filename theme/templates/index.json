@@ -23,7 +23,7 @@
       "type": "teeora-marquee",
       "settings": {
         "items": "Considered design | Natural fibres | Made to last | Complimentary shipping | Carbon-neutral delivery",
-        "separator": "✦", "serif": false, "speed": 46, "color_scheme": "scheme-1"
+        "separator": "✦", "serif": false, "speed": 45, "color_scheme": "scheme-1"
       }
     },
     "category_tiles": {
@@ -60,7 +60,7 @@
     "promo": {
       "type": "teeora-promo",
       "settings": {
-        "overlay_opacity": 42, "height": 62, "text_align": "center",
+        "overlay_opacity": 40, "height": 62, "text_align": "center",
         "eyebrow": "Members' Privilege", "heading": "Enjoy 10% off <em>your first order</em>",
         "body": "<p>Subscribe to the house and receive a private welcome offer.</p>",
         "code": "WELCOME10", "button_label": "Shop new arrivals", "button_link": "shopify://collections/all",
@@ -88,7 +88,7 @@
     },
     "image_break": {
       "type": "teeora-image-break",
-      "settings": { "overlay_opacity": 28, "height": 74, "quote": "Elegance is refusal.", "attribution": "The TEEORA Ethos", "color_scheme": "scheme-6" }
+      "settings": { "overlay_opacity": 30, "height": 74, "quote": "Elegance is refusal.", "attribution": "The TEEORA Ethos", "color_scheme": "scheme-6" }
     },
     "story": {
       "type": "teeora-story",
