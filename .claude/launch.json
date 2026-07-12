@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "teeora-theme",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "export NVM_DIR=\"$HOME/.nvm\"; . \"$NVM_DIR/nvm.sh\"; cd /Users/yousseflafi/Downloads/TEEORA/theme; exec shopify theme dev --store rmctpe-pk.myshopify.com --theme 155930296460 --port 9292 --theme-editor-sync=false"
+      ],
+      "port": 9292
+    }
+  ]
+}
