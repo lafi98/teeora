@@ -1,0 +1,64 @@
+{%- comment -%}
+  DIVA — Full-width Promotional Banner (section 4)
+  Image ground, dark overlay, centered content, CTA.
+{%- endcomment -%}
+
+{{ 'diva.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'diva.js' | asset_url }}" defer></script>
+
+{%- assign s = section.settings -%}
+
+<section
+  class="diva diva-promo"
+  style="
+    --diva-promo-h: {{ s.height }}px;
+    --diva-promo-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};
+  "
+>
+  <div class="diva-promo__media">
+    {%- if s.image != blank -%}
+      {{
+        s.image
+        | image_url: width: 2400
+        | image_tag:
+          widths: '750, 1100, 1500, 1900, 2400',
+          sizes: '100vw',
+          class: 'diva-promo__img',
+          loading: 'lazy',
+          alt: s.heading | default: 'Promotional banner' | escape
+      }}
+    {%- else -%}
+      {{ 'lifestyle-2' | placeholder_svg_tag: 'diva-promo__img' }}
+    {%- endif -%}
+    <span class="diva-promo__overlay"></span>
+  </div>
+
+  <div class="diva-promo__content diva-fade">
+    {%- if s.eyebrow != blank -%}<p class="diva-promo__eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+    {%- if s.heading != blank -%}<h2 class="diva-promo__title">{{ s.heading }}</h2>{%- endif -%}
+    {%- if s.text != blank -%}<p class="diva-promo__text">{{ s.text }}</p>{%- endif -%}
+    {%- if s.button_label != blank -%}
+      <a class="diva-btn" href="{{ s.button_link | default: '#' }}">{{ s.button_label }}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Diva Promo Banner",
+  "tag": "section",
+  "class": "diva-section-wrapper",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "I'm a multipurpose Shopify theme" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Stunning Full Width Banner" },
+    { "type": "text", "id": "text", "label": "Description", "default": "With flexible heights, text size, text color and overlay color options" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Purchase now" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "header", "content": "Appearance" },
+    { "type": "range", "id": "height", "label": "Height", "min": 280, "max": 720, "step": 10, "unit": "px", "default": 420 },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 50 }
+  ],
+  "presets": [ { "name": "Diva Promo Banner", "category": "Diva" } ]
+}
+{% endschema %}

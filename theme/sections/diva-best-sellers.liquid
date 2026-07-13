@@ -1,0 +1,85 @@
+{%- comment -%}
+  DIVA — Best Sellers (section 3)
+  Magazine-style mixed-size grid. Every Nth product renders large
+  (2×2). Reuses the diva-product-card snippet with a wrapper class.
+{%- endcomment -%}
+
+{{ 'diva.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'diva.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign s = section.settings
+  assign coll = collections[s.collection] | default: collection
+  assign feature_every = s.feature_every
+-%}
+
+<section
+  class="diva diva-section"
+  style="
+    --diva-gap: {{ s.gap }}px;
+    --diva-pad: {{ s.padding_top }}px;
+    padding-bottom: {{ s.padding_bottom }}px;
+    background: {{ s.background }};
+  "
+>
+  <div class="diva__container">
+    {%- if s.heading != blank or s.subheading != blank -%}
+      <header class="diva-head diva-fade">
+        {%- if s.heading != blank -%}<h2 class="diva-head__title">{{ s.heading }}</h2>{%- endif -%}
+        {%- if s.subheading != blank -%}<p class="diva-head__subtitle">{{ s.subheading }}</p>{%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="diva-bs__grid diva-fade">
+      {%- if coll.products.size > 0 -%}
+        {%- for product in coll.products limit: s.products_count -%}
+          {%- liquid
+            assign item_class = 'diva-bs__item'
+            assign remainder = forloop.index0 | modulo: feature_every
+            if remainder == 0
+              assign item_class = 'diva-bs__item diva-bs__item--lg'
+            endif
+          -%}
+          {%- render 'diva-product-card',
+            product: product,
+            wrapper_class: item_class,
+            show_actions: s.show_actions,
+            sizes: '(min-width: 990px) 25vw, 50vw'
+          -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..s.products_count) -%}
+          {%- assign item_class = 'diva-bs__item' -%}
+          {%- assign remainder = forloop.index0 | modulo: feature_every -%}
+          {%- if remainder == 0 %}{%- assign item_class = 'diva-bs__item diva-bs__item--lg' -%}{% endif -%}
+          <article class="diva-card {{ item_class }}">
+            <div class="diva-card__media">{{ 'product-' | append: i | placeholder_svg_tag: 'diva-card__img diva-card__img--front' }}</div>
+            <div class="diva-card__info"><span class="diva-card__title">Product title</span><span class="diva-card__price">$0.00</span></div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Diva Best Sellers",
+  "tag": "section",
+  "class": "diva-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Best Sellers" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Get in touch with what others are wearing now." },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Leave empty to use the current collection." },
+    { "type": "range", "id": "products_count", "label": "Products to show", "min": 3, "max": 16, "step": 1, "default": 8 },
+    { "type": "range", "id": "feature_every", "label": "Feature (large tile) every N", "min": 3, "max": 8, "step": 1, "default": 7, "info": "Every Nth product is shown large." },
+    { "type": "range", "id": "gap", "label": "Gap", "min": 4, "max": 40, "step": 2, "unit": "px", "default": 16 },
+    { "type": "checkbox", "id": "show_actions", "label": "Show hover action icons", "default": true },
+    { "type": "header", "content": "Spacing & colour" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "presets": [ { "name": "Diva Best Sellers", "category": "Diva" } ]
+}
+{% endschema %}

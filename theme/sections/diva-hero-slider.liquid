@@ -1,0 +1,134 @@
+{%- comment -%}
+  DIVA — Hero Slider (section 1)
+  Full-width fade slideshow. Block-driven slides, autoplay, arrows,
+  dots, keyboard + swipe. Styling in assets/diva.css, behaviour in
+  assets/diva.js. Inline styles are CSS custom properties only
+  (the Shopify-standard way to pass editor settings to external CSS).
+{%- endcomment -%}
+
+{{ 'diva.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'diva.js' | asset_url }}" defer></script>
+
+<section
+  class="diva diva-hero"
+  data-diva-slider
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-interval="{{ section.settings.interval }}"
+  aria-roledescription="carousel"
+  aria-label="{{ section.settings.aria_label | default: 'Promotional slideshow' | escape }}"
+  style="
+    --diva-hero-h: {{ section.settings.height }}px;
+    --diva-hero-h-tablet: {{ section.settings.height_tablet }}px;
+    --diva-hero-h-mobile: {{ section.settings.height_mobile }}px;
+    --diva-hero-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --diva-hero-speed: {{ section.settings.animation_speed }}ms;
+  "
+>
+  <div class="diva-hero__track">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign b = block.settings
+        assign hero_loading = 'lazy'
+        assign hero_fetch = 'auto'
+        if forloop.first
+          assign hero_loading = 'eager'
+          assign hero_fetch = 'high'
+        endif
+      -%}
+      <div
+        class="diva-hero__slide"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="{{ forloop.index }} of {{ forloop.length }}"
+        {{ block.shopify_attributes }}
+      >
+        <div class="diva-hero__media">
+          {%- if b.image != blank -%}
+            {{
+              b.image
+              | image_url: width: 2400
+              | image_tag:
+                widths: '750, 1100, 1500, 1900, 2400',
+                sizes: '100vw',
+                class: 'diva-hero__img',
+                loading: hero_loading,
+                fetchpriority: hero_fetch,
+                alt: b.heading | default: 'Slide' | escape
+            }}
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'diva-hero__img' }}
+          {%- endif -%}
+          <span class="diva-hero__overlay"></span>
+        </div>
+
+        <div class="diva-hero__content">
+          {%- if b.eyebrow != blank -%}<p class="diva-hero__eyebrow">{{ b.eyebrow }}</p>{%- endif -%}
+          {%- if b.heading != blank -%}<h2 class="diva-hero__title">{{ b.heading }}</h2>{%- endif -%}
+          {%- if b.subtitle != blank -%}<p class="diva-hero__subtitle">{{ b.subtitle }}</p>{%- endif -%}
+          {%- if b.button_label != blank -%}
+            <a class="diva-btn" href="{{ b.button_link | default: '#' }}">{{ b.button_label }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.blocks.size > 1 -%}
+    <button class="diva-hero__arrow diva-hero__arrow--prev" type="button" aria-label="Previous slide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="diva-hero__arrow diva-hero__arrow--next" type="button" aria-label="Next slide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="diva-hero__dots" role="tablist" aria-label="Choose slide">
+      {%- for block in section.blocks -%}
+        <button class="diva-hero__dot" type="button" role="tab" aria-label="Go to slide {{ forloop.index }}"></button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Diva Hero Slider",
+  "tag": "section",
+  "class": "diva-section-wrapper",
+  "settings": [
+    { "type": "checkbox", "id": "autoplay", "label": "Autoplay", "default": true },
+    { "type": "range", "id": "interval", "label": "Autoplay interval", "min": 3000, "max": 10000, "step": 500, "unit": "ms", "default": 5000 },
+    { "type": "range", "id": "animation_speed", "label": "Fade speed", "min": 200, "max": 1500, "step": 50, "unit": "ms", "default": 800 },
+    { "type": "header", "content": "Height" },
+    { "type": "range", "id": "height", "label": "Desktop", "min": 400, "max": 900, "step": 10, "unit": "px", "default": 700 },
+    { "type": "range", "id": "height_tablet", "label": "Tablet", "min": 320, "max": 800, "step": 10, "unit": "px", "default": 520 },
+    { "type": "range", "id": "height_mobile", "label": "Mobile", "min": 300, "max": 700, "step": 10, "unit": "px", "default": 460 },
+    { "type": "header", "content": "Overlay" },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 45 },
+    { "type": "text", "id": "aria_label", "label": "Accessibility label", "default": "Promotional slideshow" }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Background image" },
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Introducing New" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Diva Collection" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Exclusively from your favourite house" },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop now" },
+        { "type": "url", "id": "button_link", "label": "Button link" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Diva Hero Slider",
+      "category": "Diva",
+      "blocks": [
+        { "type": "slide", "settings": { "eyebrow": "Introducing New", "heading": "New Season Arrivals", "subtitle": "Discover the collection", "button_label": "Shop now" } },
+        { "type": "slide", "settings": { "eyebrow": "I'm a multipurpose banner", "heading": "Stunning Full Width Banner", "subtitle": "With flexible height, colour and overlay options", "button_label": "Purchase now" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

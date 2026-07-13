@@ -1,0 +1,78 @@
+{%- comment -%}
+  DIVA — Classic Collection Grid (section 2)
+  Responsive product grid (6 / 3 / 2). Uses the diva-product-card
+  snippet. Defaults to the current collection; a picker can override.
+{%- endcomment -%}
+
+{{ 'diva.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'diva.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign s = section.settings
+  assign coll = collections[s.collection] | default: collection
+-%}
+
+<section
+  class="diva diva-section"
+  style="
+    --diva-cols: {{ s.columns }};
+    --diva-cols-tablet: {{ s.columns_tablet }};
+    --diva-cols-mobile: {{ s.columns_mobile }};
+    --diva-gap: {{ s.gap }}px;
+    --diva-pad: {{ s.padding_top }}px;
+    padding-bottom: {{ s.padding_bottom }}px;
+    background: {{ s.background }};
+  "
+>
+  <div class="diva__container">
+    {%- if s.heading != blank or s.subheading != blank -%}
+      <header class="diva-head diva-fade">
+        {%- if s.heading != blank -%}<h2 class="diva-head__title">{{ s.heading }}</h2>{%- endif -%}
+        {%- if s.subheading != blank -%}<p class="diva-head__subtitle">{{ s.subheading }}</p>{%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="diva-grid diva-fade">
+      {%- if coll.products.size > 0 -%}
+        {%- for product in coll.products limit: s.products_count -%}
+          {%- render 'diva-product-card', product: product, show_actions: s.show_actions -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..s.products_count) -%}
+          <article class="diva-card">
+            <div class="diva-card__media">{{ 'product-' | append: i | placeholder_svg_tag: 'diva-card__img diva-card__img--front' }}</div>
+            <div class="diva-card__info">
+              <span class="diva-card__title">Product title</span>
+              <span class="diva-card__price">$0.00</span>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Diva Collection Grid",
+  "tag": "section",
+  "class": "diva-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Classic Collection" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Discover branded clothes as unique as you are, always up to 50% less" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Leave empty to use the current collection." },
+    { "type": "range", "id": "products_count", "label": "Products to show", "min": 2, "max": 24, "step": 1, "default": 12 },
+    { "type": "header", "content": "Columns" },
+    { "type": "range", "id": "columns", "label": "Desktop", "min": 2, "max": 6, "step": 1, "default": 6 },
+    { "type": "range", "id": "columns_tablet", "label": "Tablet", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "range", "id": "columns_mobile", "label": "Mobile", "min": 1, "max": 3, "step": 1, "default": 2 },
+    { "type": "range", "id": "gap", "label": "Gap", "min": 4, "max": 40, "step": 2, "unit": "px", "default": 16 },
+    { "type": "checkbox", "id": "show_actions", "label": "Show hover action icons", "default": true },
+    { "type": "header", "content": "Spacing & colour" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "presets": [ { "name": "Diva Collection Grid", "category": "Diva" } ]
+}
+{% endschema %}

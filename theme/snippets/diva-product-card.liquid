@@ -1,0 +1,113 @@
+{%- comment -%}
+  DIVA — reusable product card
+  Params:
+    product        (object, required)
+    wrapper_class  (string, optional) extra classes on the article
+    sizes          (string, optional) responsive sizes attr, default 300px
+    show_actions   (boolean, optional) show hover action icons, default true
+{%- endcomment -%}
+
+{%- liquid
+  assign show_actions = show_actions | default: true, allow_false: true
+  assign sizes = sizes | default: '(min-width: 990px) 16vw, (min-width: 750px) 33vw, 50vw'
+  assign second = product.images[1]
+  assign on_sale = false
+  if product.compare_at_price > product.price and product.available
+    assign on_sale = true
+  endif
+  assign first_variant = product.selected_or_first_available_variant
+-%}
+
+<article class="diva-card {{ wrapper_class }}" data-product-id="{{ product.id }}">
+  <a class="diva-card__media" href="{{ product.url }}">
+    {%- if product.featured_image -%}
+      {{
+        product.featured_image
+        | image_url: width: 800
+        | image_tag:
+          widths: '200, 300, 450, 600, 800',
+          sizes: sizes,
+          class: 'diva-card__img diva-card__img--front',
+          loading: 'lazy',
+          alt: product.featured_image.alt | default: product.title | escape
+      }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'diva-card__img diva-card__img--front' }}
+    {%- endif -%}
+
+    {%- if second -%}
+      {{
+        second
+        | image_url: width: 800
+        | image_tag:
+          widths: '200, 300, 450, 600, 800',
+          sizes: sizes,
+          class: 'diva-card__img diva-card__img--back',
+          loading: 'lazy',
+          alt: ''
+      }}
+    {%- endif -%}
+
+    {%- comment -%} Automatic badges {%- endcomment -%}
+    {%- unless product.available -%}
+      <span class="diva-badge diva-badge--soldout">Sold out</span>
+    {%- else -%}
+      {%- if on_sale -%}<span class="diva-badge diva-badge--sale">Sale</span>{%- endif -%}
+      {%- if product.tags contains 'new' or product.tags contains 'New' -%}
+        <span class="diva-badge diva-badge--new">New</span>
+      {%- endif -%}
+    {%- endunless -%}
+
+    {%- if show_actions -%}
+      <div class="diva-card__actions">
+        <button
+          type="button"
+          class="diva-action"
+          data-diva-quickview="{{ product.url }}"
+          aria-label="Quick view {{ product.title | escape }}"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        {%- if product.available -%}
+          <button
+            type="button"
+            class="diva-action"
+            data-diva-add="{{ first_variant.id }}"
+            aria-label="Add {{ product.title | escape }} to cart"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+              <path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0" stroke-linecap="round"/>
+            </svg>
+          </button>
+        {%- endif -%}
+
+        <button
+          type="button"
+          class="diva-action"
+          data-diva-wishlist="{{ product.id }}"
+          aria-label="Add {{ product.title | escape }} to wishlist"
+          aria-pressed="false"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <path d="M12 20S4 15 4 9.5A3.5 3.5 0 0 1 12 7a3.5 3.5 0 0 1 8 2.5C20 15 12 20 12 20z"/>
+          </svg>
+        </button>
+      </div>
+    {%- endif -%}
+  </a>
+
+  <div class="diva-card__info">
+    <a class="diva-card__title" href="{{ product.url }}">{{ product.title }}</a>
+    <span class="diva-card__price">
+      {%- if on_sale -%}
+        <span class="diva-card__sale">{{ product.price | money }}</span>
+        <s>{{ product.compare_at_price | money }}</s>
+      {%- else -%}
+        {{ product.price | money }}
+      {%- endif -%}
+    </span>
+  </div>
+</article>

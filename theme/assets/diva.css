@@ -1,0 +1,383 @@
+/* ============================================================
+   DIVA — modular collection-page styles
+   All static styling lives here (loaded once via stylesheet_tag).
+   Per-section dynamic values (colours, padding, overlay, cols,
+   speed) arrive as CSS custom properties set on each section root.
+   ============================================================ */
+
+.diva {
+  --diva-ink: #1a1a1a;
+  --diva-muted: #6b6b6b;
+  --diva-line: #e6e6e6;
+  --diva-bg: #ffffff;
+  --diva-accent: #d21f3c;          /* sale red */
+  --diva-new: #4caf50;             /* new green */
+  --diva-soldout: #ff5c8a;         /* sold-out pink */
+  --diva-radius: 4px;
+  --diva-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --diva-shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.14);
+  --diva-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --diva-dur: 300ms;
+  --diva-container: 1440px;
+  --diva-gap: 16px;
+  font-family: var(--tee-sans, "Jost", "Helvetica Neue", Arial, sans-serif);
+  color: var(--diva-ink);
+}
+
+*,
+.diva *,
+.diva *::before,
+.diva *::after { box-sizing: border-box; }
+
+.diva__container {
+  max-width: var(--diva-container);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+}
+
+/* ---- Shared section header (centered title + subtitle) ---- */
+.diva-head { text-align: center; margin-bottom: clamp(1.75rem, 4vw, 3rem); }
+.diva-head__title {
+  font-family: var(--tee-sans, "Jost", sans-serif);
+  font-weight: 500;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 0.6rem;
+  color: var(--diva-ink);
+}
+.diva-head__subtitle {
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  color: var(--diva-muted);
+  margin: 0;
+  font-weight: 300;
+}
+
+/* ---- Buttons ---- */
+.diva-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2.2rem;
+  font-family: var(--tee-sans, "Jost", sans-serif);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid #fff;
+  background: transparent;
+  color: #fff;
+  border-radius: 0;
+  transition: background var(--diva-dur) var(--diva-ease),
+              color var(--diva-dur) var(--diva-ease),
+              border-color var(--diva-dur) var(--diva-ease),
+              transform var(--diva-dur) var(--diva-ease);
+}
+.diva-btn:hover { background: #fff; color: var(--diva-ink); transform: translateY(-2px); }
+.diva-btn--ink { border-color: var(--diva-ink); color: var(--diva-ink); }
+.diva-btn--ink:hover { background: var(--diva-ink); color: #fff; }
+.diva-btn--solid { background: var(--diva-ink); color: #fff; border-color: var(--diva-ink); }
+.diva-btn--solid:hover { background: transparent; color: var(--diva-ink); }
+
+/* ============================================================
+   1 · HERO SLIDER
+   ============================================================ */
+.diva-hero {
+  position: relative;
+  height: var(--diva-hero-h, 700px);
+  overflow: hidden;
+  background: #111;
+}
+.diva-hero__track { height: 100%; }
+.diva-hero__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--diva-hero-speed, 800ms) ease;
+  display: grid;
+  place-items: center;
+}
+.diva-hero__slide.is-active { opacity: 1; visibility: visible; }
+.diva-hero__media { position: absolute; inset: 0; }
+.diva-hero__img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.diva-hero__overlay {
+  position: absolute; inset: 0;
+  background: #000;
+  opacity: var(--diva-hero-overlay, 0.45);
+}
+.diva-hero__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+  padding: 1.5rem;
+  max-width: 900px;
+  transform: translateY(16px);
+  opacity: 0;
+  transition: opacity 0.7s var(--diva-ease) 0.15s, transform 0.7s var(--diva-ease) 0.15s;
+}
+.diva-hero__slide.is-active .diva-hero__content { opacity: 1; transform: none; }
+.diva-hero__eyebrow {
+  font-size: 0.78rem; letter-spacing: 0.3em; text-transform: uppercase;
+  opacity: 0.9; margin: 0 0 1rem;
+}
+.diva-hero__title {
+  font-family: var(--tee-sans, "Jost", sans-serif);
+  font-weight: 600;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+}
+.diva-hero__subtitle {
+  font-size: clamp(0.95rem, 1.6vw, 1.25rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.92;
+  margin: 0 0 2rem;
+  font-weight: 300;
+}
+.diva-hero__arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 3;
+  width: 52px; height: 52px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff; cursor: pointer;
+  transition: background var(--diva-dur), border-color var(--diva-dur);
+}
+.diva-hero__arrow:hover { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
+.diva-hero__arrow--prev { left: clamp(0.75rem, 2vw, 2rem); }
+.diva-hero__arrow--next { right: clamp(0.75rem, 2vw, 2rem); }
+.diva-hero__arrow svg { width: 20px; height: 20px; }
+.diva-hero__dots {
+  position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  z-index: 3; display: flex; gap: 0.6rem;
+}
+.diva-hero__dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 0; padding: 0; cursor: pointer;
+  background: rgba(255, 255, 255, 0.45);
+  transition: background var(--diva-dur), transform var(--diva-dur);
+}
+.diva-hero__dot.is-active { background: #fff; transform: scale(1.25); }
+
+/* ============================================================
+   2 · PRODUCT GRID (Classic Collection)
+   ============================================================ */
+.diva-section { padding-block: var(--diva-pad, clamp(3rem, 6vw, 5rem)); background: var(--diva-bg); }
+
+.diva-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--diva-cols, 6), minmax(0, 1fr));
+  gap: var(--diva-gap, 16px);
+}
+
+/* ---- Product card (reusable) ---- */
+.diva-card { position: relative; display: flex; flex-direction: column; }
+.diva-card__media {
+  position: relative; display: block; overflow: hidden;
+  aspect-ratio: 3 / 4; background: #f4f4f4; border-radius: var(--diva-radius);
+}
+.diva-card__img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover;
+  transition: opacity var(--diva-dur) var(--diva-ease), transform 600ms var(--diva-ease);
+}
+.diva-card__img--back { opacity: 0; }
+.diva-card:hover .diva-card__img--front { opacity: 0; }
+.diva-card:hover .diva-card__img--back { opacity: 1; }
+.diva-card:hover .diva-card__img { transform: scale(1.06); }
+.diva-card__img--front:only-child { opacity: 1; }
+.diva-card:hover .diva-card__img--front:only-child { opacity: 1; }
+
+/* Badges */
+.diva-badge {
+  position: absolute; top: 0.6rem; z-index: 2;
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #fff;
+  padding: 0.32rem 0.6rem; border-radius: 3px;
+}
+.diva-badge--sale { left: 0.6rem; background: var(--diva-accent); }
+.diva-badge--new { right: 0.6rem; background: var(--diva-new); }
+.diva-badge--soldout { left: 0.6rem; background: var(--diva-soldout); }
+
+/* Action icons — revealed on hover */
+.diva-card__actions {
+  position: absolute; left: 0; right: 0; bottom: 0.6rem; z-index: 2;
+  display: flex; justify-content: center; gap: 0.5rem;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity var(--diva-dur) var(--diva-ease), transform var(--diva-dur) var(--diva-ease);
+  pointer-events: none;
+}
+.diva-card:hover .diva-card__actions,
+.diva-card:focus-within .diva-card__actions { opacity: 1; transform: none; pointer-events: auto; }
+.diva-action {
+  width: 42px; height: 42px; display: grid; place-items: center;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: #fff; color: var(--diva-ink);
+  box-shadow: var(--diva-shadow);
+  transition: background var(--diva-dur), color var(--diva-dur), transform var(--diva-dur);
+}
+.diva-action:hover { background: var(--diva-ink); color: #fff; transform: translateY(-3px); }
+.diva-action svg { width: 18px; height: 18px; }
+.diva-action.is-active { background: var(--diva-accent); color: #fff; }
+
+.diva-card__info { text-align: center; padding-top: 0.9rem; display: flex; flex-direction: column; gap: 0.3rem; }
+.diva-card__title {
+  font-size: 0.92rem; font-weight: 400; color: var(--diva-ink);
+  text-decoration: none; line-height: 1.3;
+}
+.diva-card__title:hover { text-decoration: underline; text-underline-offset: 3px; }
+.diva-card__price { font-size: 0.9rem; color: var(--diva-muted); display: inline-flex; gap: 0.5rem; justify-content: center; }
+.diva-card__price s { opacity: 0.6; }
+.diva-card__price .diva-card__sale { color: var(--diva-accent); }
+
+/* ============================================================
+   3 · BEST SELLERS — magazine / mixed-size grid
+   ============================================================ */
+.diva-bs__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  grid-auto-flow: dense;
+  gap: var(--diva-gap, 16px);
+}
+.diva-bs__item { min-width: 0; }
+.diva-bs__item .diva-card__media { aspect-ratio: 3 / 4; }
+.diva-bs__item--lg { grid-column: span 2; grid-row: span 2; }
+.diva-bs__item--lg .diva-card { height: 100%; }
+.diva-bs__item--lg .diva-card__media { aspect-ratio: auto; flex: 1 1 auto; min-height: 0; }
+.diva-bs__item--wide { grid-column: span 2; }
+
+/* ============================================================
+   4 · PROMO BANNER
+   ============================================================ */
+.diva-promo {
+  position: relative;
+  min-height: var(--diva-promo-h, 420px);
+  display: grid; place-items: center;
+  overflow: hidden; text-align: center;
+}
+.diva-promo__media { position: absolute; inset: 0; }
+.diva-promo__img { width: 100%; height: 100%; object-fit: cover; }
+.diva-promo__overlay { position: absolute; inset: 0; background: #000; opacity: var(--diva-promo-overlay, 0.5); }
+.diva-promo__content { position: relative; z-index: 2; color: #fff; padding: 2rem 1.5rem; max-width: 760px; }
+.diva-promo__eyebrow { font-size: 0.78rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.9; margin: 0 0 1rem; }
+.diva-promo__title {
+  font-family: var(--tee-sans, "Jost", sans-serif);
+  font-weight: 600; font-size: clamp(1.8rem, 5vw, 3.6rem);
+  letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.05; margin: 0 0 1rem;
+}
+.diva-promo__text { font-size: clamp(0.95rem, 1.6vw, 1.15rem); opacity: 0.92; margin: 0 0 2rem; font-weight: 300; }
+
+/* ============================================================
+   5 · BLOG POSTS
+   ============================================================ */
+.diva-blog__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+}
+.diva-post { display: flex; flex-direction: column; height: 100%; }
+.diva-post__media { display: block; overflow: hidden; aspect-ratio: 16 / 10; border-radius: var(--diva-radius); background: #f4f4f4; }
+.diva-post__img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms var(--diva-ease); }
+.diva-post:hover .diva-post__img { transform: scale(1.06); }
+.diva-post__body { display: flex; flex-direction: column; gap: 0.6rem; padding-top: 1.1rem; flex: 1 1 auto; }
+.diva-post__title { font-size: 1.05rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin: 0; line-height: 1.3; }
+.diva-post__title a { color: var(--diva-ink); text-decoration: none; }
+.diva-post__title a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.diva-post__date { font-size: 0.78rem; color: var(--diva-muted); letter-spacing: 0.04em; }
+.diva-post__excerpt { font-size: 0.95rem; line-height: 1.65; color: var(--diva-muted); font-weight: 300; margin: 0; }
+.diva-post__more { margin-top: auto; padding-top: 1rem; }
+.diva-post__more .diva-btn { padding: 0.7rem 1.6rem; font-size: 0.72rem; }
+
+/* ============================================================
+   Quick-view modal (built by diva.js)
+   ============================================================ */
+.diva-modal {
+  position: fixed; inset: 0; z-index: 9999;
+  display: none; place-items: center;
+  padding: 1.5rem;
+}
+.diva-modal.is-open { display: grid; }
+.diva-modal__backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.55); opacity: 0; transition: opacity var(--diva-dur); }
+.diva-modal.is-open .diva-modal__backdrop { opacity: 1; }
+.diva-modal__dialog {
+  position: relative; z-index: 1;
+  background: #fff; border-radius: var(--diva-radius);
+  max-width: 860px; width: 100%; max-height: 90vh; overflow: auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  box-shadow: var(--diva-shadow-lg);
+  transform: translateY(16px) scale(0.98); opacity: 0;
+  transition: transform var(--diva-dur) var(--diva-ease), opacity var(--diva-dur);
+}
+.diva-modal.is-open .diva-modal__dialog { transform: none; opacity: 1; }
+.diva-modal__media { background: #f4f4f4; }
+.diva-modal__media img { width: 100%; height: 100%; object-fit: cover; }
+.diva-modal__body { padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+.diva-modal__title { font-size: 1.4rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin: 0; }
+.diva-modal__price { font-size: 1.1rem; color: var(--diva-muted); }
+.diva-modal__desc { font-size: 0.92rem; line-height: 1.6; color: var(--diva-muted); font-weight: 300; }
+.diva-modal__close {
+  position: absolute; top: 0.75rem; right: 0.75rem; z-index: 2;
+  width: 38px; height: 38px; border: 0; border-radius: 50%;
+  background: #fff; box-shadow: var(--diva-shadow); cursor: pointer;
+  display: grid; place-items: center;
+}
+.diva-modal__close svg { width: 18px; height: 18px; }
+
+/* ---- Toast for cart feedback ---- */
+.diva-toast {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px);
+  z-index: 10000; background: var(--diva-ink); color: #fff;
+  padding: 0.85rem 1.5rem; border-radius: 100px; font-size: 0.85rem;
+  box-shadow: var(--diva-shadow-lg); opacity: 0; pointer-events: none;
+  transition: opacity var(--diva-dur), transform var(--diva-dur);
+}
+.diva-toast.is-visible { opacity: 1; transform: translateX(-50%); }
+
+/* ============================================================
+   Fade-in on scroll (added by diva.js)
+   ============================================================ */
+.diva-fade { opacity: 0; transform: translateY(24px); transition: opacity 0.8s var(--diva-ease), transform 0.8s var(--diva-ease); }
+.diva-fade.is-in { opacity: 1; transform: none; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .diva-hero { height: var(--diva-hero-h-tablet, 520px); }
+  .diva-grid { grid-template-columns: repeat(var(--diva-cols-tablet, 3), minmax(0, 1fr)); }
+  .diva-bs__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .diva-bs__item--lg { grid-column: span 2; grid-row: auto; }
+  .diva-bs__item--lg .diva-card__media { aspect-ratio: 4 / 3; }
+  .diva-blog__grid { grid-template-columns: 1fr; max-width: 640px; margin-inline: auto; }
+  .diva-modal__dialog { grid-template-columns: 1fr; }
+  .diva-modal__media { aspect-ratio: 4 / 3; }
+}
+
+@media (max-width: 640px) {
+  .diva-hero { height: var(--diva-hero-h-mobile, 460px); }
+  .diva-hero__arrow { width: 40px; height: 40px; }
+  .diva-grid { grid-template-columns: repeat(var(--diva-cols-mobile, 2), minmax(0, 1fr)); }
+  .diva-bs__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .diva-bs__item--lg { grid-column: span 2; }
+  .diva-card__actions { opacity: 1; transform: none; pointer-events: auto; } /* always visible on touch */
+  .diva-hero__content .diva-btn,
+  .diva-promo__content .diva-btn { width: 100%; max-width: 320px; }
+}
+
+/* ---- Motion preference ---- */
+@media (prefers-reduced-motion: reduce) {
+  .diva *,
+  .diva-modal * { transition: none !important; animation: none !important; }
+  .diva-fade { opacity: 1; transform: none; }
+}

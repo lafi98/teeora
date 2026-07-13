@@ -1,0 +1,86 @@
+{%- comment -%}
+  DIVA — Latest Blog Posts (section 5)
+  Three equal-height article cards from a chosen blog. Falls back to
+  placeholders when the blog has no articles yet.
+{%- endcomment -%}
+
+{{ 'diva.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'diva.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign s = section.settings
+  assign blog = blogs[s.blog]
+-%}
+
+<section
+  class="diva diva-section"
+  style="
+    --diva-pad: {{ s.padding_top }}px;
+    padding-bottom: {{ s.padding_bottom }}px;
+    background: {{ s.background }};
+  "
+>
+  <div class="diva__container">
+    {%- if s.heading != blank -%}
+      <header class="diva-head diva-fade">
+        <h2 class="diva-head__title">{{ s.heading }}</h2>
+        {%- if s.subheading != blank -%}<p class="diva-head__subtitle">{{ s.subheading }}</p>{%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="diva-blog__grid diva-fade">
+      {%- if blog.articles_count > 0 -%}
+        {%- for article in blog.articles limit: 3 -%}
+          <article class="diva-post">
+            <a class="diva-post__media" href="{{ article.url }}" aria-label="{{ article.title | escape }}">
+              {%- if article.image -%}
+                {{ article.image | image_url: width: 900 | image_tag: widths: '300, 500, 700, 900', sizes: '(min-width: 750px) 33vw, 90vw', class: 'diva-post__img', loading: 'lazy', alt: article.image.alt | default: article.title | escape }}
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'diva-post__img' }}
+              {%- endif -%}
+            </a>
+            <div class="diva-post__body">
+              <h3 class="diva-post__title"><a href="{{ article.url }}">{{ article.title }}</a></h3>
+              <time class="diva-post__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
+              <p class="diva-post__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+              <div class="diva-post__more">
+                <a class="diva-btn diva-btn--ink" href="{{ article.url }}">{{ s.button_label }}</a>
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..3) -%}
+          <article class="diva-post">
+            <div class="diva-post__media">{{ 'image' | placeholder_svg_tag: 'diva-post__img' }}</div>
+            <div class="diva-post__body">
+              <h3 class="diva-post__title"><a href="#">Blog post title</a></h3>
+              <time class="diva-post__date">February 12, 2018</time>
+              <p class="diva-post__excerpt">Connect a blog in the section settings to feature your latest posts here.</p>
+              <div class="diva-post__more"><a class="diva-btn diva-btn--ink" href="#">{{ s.button_label }}</a></div>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Diva Blog Posts",
+  "tag": "section",
+  "class": "diva-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Latest From Our Blog" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "" },
+    { "type": "blog", "id": "blog", "label": "Blog" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Read more" },
+    { "type": "header", "content": "Spacing & colour" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "presets": [ { "name": "Diva Blog Posts", "category": "Diva" } ]
+}
+{% endschema %}
