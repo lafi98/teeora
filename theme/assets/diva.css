@@ -300,6 +300,76 @@
 .diva-post__more .diva-btn { padding: 0.7rem 1.6rem; font-size: 0.72rem; }
 
 /* ============================================================
+   COLLECTION PAGE (diva-collection)
+   ============================================================ */
+.diva-col__banner { position: relative; overflow: hidden; }
+.diva-col__banner--plain {
+  text-align: center;
+  padding: clamp(2.5rem, 6vw, 5rem) 1.5rem clamp(1.5rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--diva-line);
+}
+.diva-col__banner--image { min-height: clamp(240px, 34vw, 420px); display: grid; place-items: center; text-align: center; }
+.diva-col__banner-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.diva-col__banner-overlay { position: absolute; inset: 0; background: #000; opacity: var(--diva-col-overlay, 0.35); }
+.diva-col__banner-inner { position: relative; z-index: 1; max-width: 720px; padding: 1.5rem; }
+.diva-col__title {
+  font-family: var(--tee-sans, "Jost", sans-serif);
+  font-weight: 500; font-size: clamp(1.6rem, 3.6vw, 2.8rem);
+  letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 0.75rem; color: var(--diva-ink);
+}
+.diva-col__title--on-image { color: #fff; }
+.diva-col__desc { font-size: clamp(0.95rem, 1.4vw, 1.05rem); line-height: 1.6; color: var(--diva-muted); font-weight: 300; margin: 0 auto; max-width: 60ch; }
+.diva-col__desc--on-image { color: rgba(255, 255, 255, 0.9); }
+.diva-col__desc p { margin: 0; }
+
+.diva-col__toolbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding-block: clamp(1.25rem, 2.5vw, 2rem);
+  border-bottom: 1px solid var(--diva-line);
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  flex-wrap: wrap;
+}
+.diva-col__count { margin: 0; font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--diva-muted); }
+.diva-col__sort { display: flex; align-items: center; gap: 0.6rem; }
+.diva-col__sort-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--diva-muted); }
+.diva-col__sort-select {
+  font-family: var(--tee-sans, "Jost", sans-serif); font-size: 0.82rem;
+  padding: 0.55rem 2rem 0.55rem 0.8rem; border: 1px solid var(--diva-line);
+  background: #fff; color: var(--diva-ink); border-radius: 0; cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b6b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.7rem center;
+}
+.diva-col__sort-select:focus-visible { outline: 2px solid var(--diva-ink); outline-offset: 2px; }
+
+/* Neutral media when an added product has no image yet */
+.diva-card__noimg {
+  display: block;
+  background:
+    repeating-linear-gradient(45deg, #f2f2f2, #f2f2f2 10px, #efefef 10px, #efefef 20px);
+}
+
+.diva-col__pagination { display: flex; justify-content: center; align-items: center; gap: 0.4rem; margin-top: clamp(2.5rem, 5vw, 4rem); }
+.diva-col__page {
+  min-width: 40px; height: 40px; padding: 0 0.5rem;
+  display: grid; place-items: center;
+  font-size: 0.85rem; text-decoration: none; color: var(--diva-ink);
+  border: 1px solid var(--diva-line); background: #fff;
+  transition: background var(--diva-dur), color var(--diva-dur), border-color var(--diva-dur);
+}
+.diva-col__page:hover { border-color: var(--diva-ink); }
+.diva-col__page.is-current { background: var(--diva-ink); color: #fff; border-color: var(--diva-ink); }
+.diva-col__page--gap { border: 0; background: transparent; }
+
+.diva-col__empty { text-align: center; padding: clamp(3.5rem, 9vw, 7rem) 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
+.diva-col__empty-title { font-family: var(--tee-sans, "Jost", sans-serif); font-size: 1.3rem; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
+.diva-col__empty-text { color: var(--diva-muted); font-weight: 300; margin: 0 0 0.5rem; max-width: 44ch; }
+
+@media (max-width: 640px) {
+  .diva-col__toolbar { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+}
+
+/* ============================================================
    Quick-view modal (built by diva.js)
    ============================================================ */
 .diva-modal {

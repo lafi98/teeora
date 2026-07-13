@@ -32,7 +32,8 @@
           alt: product.featured_image.alt | default: product.title | escape
       }}
     {%- else -%}
-      {{ 'product-1' | placeholder_svg_tag: 'diva-card__img diva-card__img--front' }}
+      {%- comment -%} Real product with no image yet — neutral media, never a placeholder illustration {%- endcomment -%}
+      <span class="diva-card__img diva-card__img--front diva-card__noimg" role="img" aria-label="{{ product.title | escape }}"></span>
     {%- endif -%}
 
     {%- if second -%}

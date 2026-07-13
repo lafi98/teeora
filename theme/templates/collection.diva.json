@@ -1,79 +1,35 @@
 /*
- * DIVA collection template — assign to any collection via
- * Theme editor → Collection → Template = "diva".
- * The grid and best-sellers default to the current collection's products.
+ * DIVA collection template — a clean, fully dynamic luxury listing.
+ * Assign to any collection via Products → Collections → (collection)
+ * → Theme template → "diva". It renders whatever products are in the
+ * collection, with a dynamic banner, sort and pagination. No hardcoded
+ * or placeholder products. Header, footer and navigation are unchanged
+ * (they come from the theme's section groups).
  */
 {
   "sections": {
-    "hero": {
-      "type": "diva-hero-slider",
+    "main": {
+      "type": "diva-collection",
       "settings": {
-        "autoplay": true,
-        "interval": 5000,
-        "animation_speed": 800,
-        "height": 700,
-        "height_tablet": 520,
-        "height_mobile": 460,
-        "overlay_opacity": 45,
-        "aria_label": "Promotional slideshow"
-      },
-      "blocks": {
-        "s1": { "type": "slide", "settings": { "eyebrow": "Introducing New", "heading": "New Season Arrivals", "subtitle": "Discover the collection", "button_label": "Shop now", "button_link": "shopify://collections/all" } },
-        "s2": { "type": "slide", "settings": { "eyebrow": "I'm a multipurpose banner", "heading": "Stunning Full Width Banner", "subtitle": "With flexible height, colour and overlay options", "button_label": "Purchase now" } }
-      },
-      "block_order": ["s1", "s2"]
-    },
-    "grid": {
-      "type": "diva-collection-grid",
-      "settings": {
-        "heading": "Classic Collection",
-        "subheading": "Discover branded clothes as unique as you are, always up to 50% less",
-        "products_count": 12,
-        "columns": 6,
+        "show_banner": true,
+        "use_collection_image": true,
+        "show_description": true,
+        "overlay_opacity": 35,
+        "per_page": 24,
+        "columns": 4,
         "columns_tablet": 3,
         "columns_mobile": 2,
-        "gap": 16,
+        "gap": 20,
+        "show_sort": true,
         "show_actions": true,
-        "padding_top": 64,
-        "padding_bottom": 48,
-        "background": "#ffffff"
-      }
-    },
-    "best": {
-      "type": "diva-best-sellers",
-      "settings": {
-        "heading": "Best Sellers",
-        "subheading": "Get in touch with what others are wearing now.",
-        "products_count": 8,
-        "feature_every": 7,
-        "gap": 16,
-        "show_actions": true,
+        "empty_heading": "Coming soon",
+        "empty_text": "New pieces are on their way. Please check back shortly.",
+        "empty_button_label": "Browse all products",
         "padding_top": 48,
-        "padding_bottom": 48,
-        "background": "#ffffff"
-      }
-    },
-    "promo": {
-      "type": "diva-promo-banner",
-      "settings": {
-        "eyebrow": "I'm a multipurpose Shopify theme",
-        "heading": "Stunning Full Width Banner",
-        "text": "With flexible heights, text size, text color and overlay color options",
-        "button_label": "Purchase now",
-        "height": 420,
-        "overlay_opacity": 50
-      }
-    },
-    "blog": {
-      "type": "diva-blog-posts",
-      "settings": {
-        "heading": "Latest From Our Blog",
-        "button_label": "Read more",
-        "padding_top": 64,
-        "padding_bottom": 64,
+        "padding_bottom": 80,
         "background": "#ffffff"
       }
     }
   },
-  "order": ["hero", "grid", "best", "promo", "blog"]
+  "order": ["main"]
 }

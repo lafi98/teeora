@@ -1,0 +1,169 @@
+{%- comment -%}
+  DIVA — Collection (clean, fully dynamic listing)
+  Renders the current collection: title/description/image from the
+  collection object, a sort control, a responsive product grid built
+  from collection.products, pagination, and a graceful empty state.
+  No hardcoded products, no placeholder products, no generated images.
+{%- endcomment -%}
+
+{{ 'diva.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'diva.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign s = section.settings
+  assign current_sort = collection.sort_by | default: collection.default_sort_by
+-%}
+
+<section
+  class="diva diva-col"
+  style="
+    --diva-cols: {{ s.columns }};
+    --diva-cols-tablet: {{ s.columns_tablet }};
+    --diva-cols-mobile: {{ s.columns_mobile }};
+    --diva-gap: {{ s.gap }}px;
+    --diva-pad: {{ s.padding_top }}px;
+    --diva-col-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};
+    padding-bottom: {{ s.padding_bottom }}px;
+    background: {{ s.background }};
+  "
+>
+  {%- comment -%} ---- Banner (dynamic; image only if the collection has one) ---- {%- endcomment -%}
+  {%- if s.show_banner -%}
+    {%- if collection.image and s.use_collection_image -%}
+      <header class="diva-col__banner diva-col__banner--image">
+        {{
+          collection.image
+          | image_url: width: 2400
+          | image_tag:
+            widths: '750, 1100, 1500, 1900, 2400',
+            sizes: '100vw',
+            class: 'diva-col__banner-img',
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: collection.title | escape
+        }}
+        <span class="diva-col__banner-overlay"></span>
+        <div class="diva-col__banner-inner">
+          <h1 class="diva-col__title diva-col__title--on-image">{{ collection.title }}</h1>
+          {%- if s.show_description and collection.description != blank -%}
+            <div class="diva-col__desc diva-col__desc--on-image">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+      </header>
+    {%- else -%}
+      <header class="diva-col__banner diva-col__banner--plain">
+        <div class="diva-col__banner-inner">
+          <h1 class="diva-col__title">{{ collection.title }}</h1>
+          {%- if s.show_description and collection.description != blank -%}
+            <div class="diva-col__desc">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+      </header>
+    {%- endif -%}
+  {%- endif -%}
+
+  <div class="diva__container">
+    {%- comment -%} ---- Toolbar: count + sort ---- {%- endcomment -%}
+    {%- if collection.products_count > 0 -%}
+      <div class="diva-col__toolbar">
+        <p class="diva-col__count">
+          {{ collection.products_count }} {% if collection.products_count == 1 %}product{% else %}products{% endif %}
+        </p>
+
+        {%- if s.show_sort and collection.sort_options.size > 0 -%}
+          <form method="get" class="diva-col__sort" id="DivaSort-{{ section.id }}">
+            {%- comment -%} Preserve any active storefront filters when sorting {%- endcomment -%}
+            {%- for filter in collection.filters -%}
+              {%- for value in filter.active_values -%}
+                <input type="hidden" name="{{ value.param_name }}" value="{{ value.value | escape }}">
+              {%- endfor -%}
+            {%- endfor -%}
+            <label class="diva-col__sort-label" for="DivaSortSelect-{{ section.id }}">Sort by</label>
+            <select
+              name="sort_by"
+              id="DivaSortSelect-{{ section.id }}"
+              class="diva-col__sort-select"
+              onchange="this.form.submit()"
+            >
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value }}" {% if option.value == current_sort %}selected{% endif %}>{{ option.name }}</option>
+              {%- endfor -%}
+            </select>
+          </form>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ---- Product grid (dynamic + paginated) or empty state ---- {%- endcomment -%}
+    {%- if collection.products_count > 0 -%}
+      {%- paginate collection.products by s.per_page -%}
+        <div class="diva-grid diva-fade">
+          {%- for product in collection.products -%}
+            {%- render 'diva-product-card', product: product, show_actions: s.show_actions -%}
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="diva-col__pagination" role="navigation" aria-label="Pagination">
+            {%- if paginate.previous -%}
+              <a class="diva-col__page diva-col__page--arrow" href="{{ paginate.previous.url }}" aria-label="Previous page">‹</a>
+            {%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a class="diva-col__page" href="{{ part.url }}">{{ part.title }}</a>
+              {%- elsif part.title == paginate.current_page -%}
+                <span class="diva-col__page is-current" aria-current="page">{{ part.title }}</span>
+              {%- else -%}
+                <span class="diva-col__page diva-col__page--gap">{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}
+              <a class="diva-col__page diva-col__page--arrow" href="{{ paginate.next.url }}" aria-label="Next page">›</a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      <div class="diva-col__empty">
+        <p class="diva-col__empty-title">{{ s.empty_heading }}</p>
+        <p class="diva-col__empty-text">{{ s.empty_text }}</p>
+        {%- if s.empty_button_label != blank -%}
+          <a class="diva-btn diva-btn--ink" href="{{ s.empty_button_link | default: routes.all_products_collection_url }}">{{ s.empty_button_label }}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Diva Collection",
+  "tag": "section",
+  "class": "diva-section-wrapper",
+  "settings": [
+    { "type": "header", "content": "Banner" },
+    { "type": "checkbox", "id": "show_banner", "label": "Show collection banner", "default": true },
+    { "type": "checkbox", "id": "use_collection_image", "label": "Use collection image (if set)", "default": true },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
+    { "type": "range", "id": "overlay_opacity", "label": "Banner image overlay", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 35 },
+    { "type": "header", "content": "Grid" },
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "range", "id": "columns", "label": "Columns — desktop", "min": 2, "max": 6, "step": 1, "default": 4 },
+    { "type": "range", "id": "columns_tablet", "label": "Columns — tablet", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "range", "id": "columns_mobile", "label": "Columns — mobile", "min": 1, "max": 3, "step": 1, "default": 2 },
+    { "type": "range", "id": "gap", "label": "Gap", "min": 4, "max": 40, "step": 2, "unit": "px", "default": 20 },
+    { "type": "checkbox", "id": "show_sort", "label": "Show sort control", "default": true },
+    { "type": "checkbox", "id": "show_actions", "label": "Show hover action icons", "default": true },
+    { "type": "header", "content": "Empty state (no products yet)" },
+    { "type": "text", "id": "empty_heading", "label": "Empty heading", "default": "Coming soon" },
+    { "type": "text", "id": "empty_text", "label": "Empty message", "default": "New pieces are on their way. Please check back shortly." },
+    { "type": "text", "id": "empty_button_label", "label": "Empty button label", "default": "Browse all products" },
+    { "type": "url", "id": "empty_button_link", "label": "Empty button link" },
+    { "type": "header", "content": "Spacing & colour" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 80 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "presets": [ { "name": "Diva Collection", "category": "Diva" } ]
+}
+{% endschema %}
