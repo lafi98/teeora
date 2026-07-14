@@ -1,0 +1,106 @@
+{%- comment -%}
+  DIVA — Featured Slider (Best Sellers)
+  Split layout: editable lifestyle image (with link) on the left, a
+  horizontal product slider from a chosen collection on the right.
+{%- endcomment -%}
+
+{{ 'diva.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'diva.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign s = section.settings
+  assign coll = collections[s.collection]
+-%}
+
+<section
+  class="diva diva-section"
+  style="
+    --diva-slide-cols: {{ s.slides_desktop }};
+    --diva-slide-cols-tablet: {{ s.slides_tablet }};
+    --diva-slide-cols-mobile: {{ s.slides_mobile }};
+    --diva-gap: {{ s.gap }}px;
+    --diva-pad: {{ s.padding_top }}px;
+    padding-bottom: {{ s.padding_bottom }}px;
+    background: {{ s.background }};
+  "
+>
+  <div class="diva__container">
+    {%- if s.link_top_label != blank -%}
+      <a class="diva-hscroll__link" style="margin: 0 0 1.5rem;" href="{{ s.link_top_url | default: coll.url | default: '#' }}">{{ s.link_top_label }}</a>
+    {%- endif -%}
+
+    <div class="diva-feat__grid diva-fade">
+      <div class="diva-feat__promo">
+        {%- if s.image != blank -%}
+          {{ s.image | image_url: width: 1200 | image_tag: widths: '400, 700, 1000, 1200', sizes: '(min-width: 750px) 35vw, 100vw', class: 'diva-feat__promo-img', loading: 'lazy', alt: s.link_label | default: 'Featured' | escape }}
+          <span class="diva-hero__overlay" style="opacity: 0.15;"></span>
+        {%- endif -%}
+        {%- if s.link_label != blank -%}
+          <div class="diva-feat__promo-inner">
+            <a class="diva-feat__promo-link" href="{{ s.link_url | default: coll.url | default: '#' }}">{{ s.link_label }}</a>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="diva-feat__slider">
+        <div class="diva-hscroll" data-diva-hscroll>
+          {%- if s.heading != blank -%}
+            <div class="diva-hscroll__head">
+              <h2 class="diva-hscroll__title">{{ s.heading }}</h2>
+              <div class="diva-hscroll__arrows">
+                <button class="diva-hscroll__arrow" type="button" data-diva-hscroll-prev aria-label="Scroll left">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="diva-hscroll__arrow" type="button" data-diva-hscroll-next aria-label="Scroll right">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if coll != blank and coll.products.size > 0 -%}
+            <div class="diva-hscroll__track" data-diva-hscroll-track>
+              {%- for product in coll.products limit: s.products_count -%}
+                {%- render 'diva-slide-card', product: product, show_subtitle: s.show_subtitle, show_price: s.show_price, sizes: '(min-width: 990px) 22vw, 45vw' -%}
+              {%- endfor -%}
+            </div>
+          {%- else -%}
+            <p class="diva-hscroll__empty">Choose a collection in the theme editor to populate this slider.</p>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Diva Featured Slider",
+  "tag": "section",
+  "class": "diva-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "link_top_label", "label": "Top link label", "default": "Shop New Arrivals" },
+    { "type": "url", "id": "link_top_url", "label": "Top link URL" },
+    { "type": "header", "content": "Lifestyle image (left)" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "link_label", "label": "Image link label", "default": "Shop Best Sellers" },
+    { "type": "url", "id": "link_url", "label": "Image link URL" },
+    { "type": "header", "content": "Product slider (right)" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Best Sellers" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "products_count", "label": "Products to show", "min": 3, "max": 16, "step": 1, "default": 8 },
+    { "type": "checkbox", "id": "show_subtitle", "label": "Show product type as subtitle", "default": true },
+    { "type": "checkbox", "id": "show_price", "label": "Show price", "default": false },
+    { "type": "header", "content": "Slides per view (right column)" },
+    { "type": "range", "id": "slides_desktop", "label": "Desktop", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "range", "id": "slides_tablet", "label": "Tablet", "min": 2, "max": 3, "step": 1, "default": 2 },
+    { "type": "range", "id": "slides_mobile", "label": "Mobile", "min": 1, "max": 2, "step": 1, "default": 2 },
+    { "type": "range", "id": "gap", "label": "Gap", "min": 8, "max": 40, "step": 2, "unit": "px", "default": 20 },
+    { "type": "header", "content": "Spacing & colour" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#faf8f3" }
+  ],
+  "presets": [ { "name": "Diva Featured Slider", "category": "Diva" } ]
+}
+{% endschema %}

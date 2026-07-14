@@ -236,10 +236,44 @@
   }
 
   /* ---------------------------------------------------------
+     HORIZONTAL SCROLLERS (product / testimonial sliders)
+     --------------------------------------------------------- */
+  function initHScroll(root) {
+    if (root.__divaHS) return;
+    root.__divaHS = true;
+    var track = root.querySelector('[data-diva-hscroll-track]');
+    if (!track) return;
+    var prev = root.querySelector('[data-diva-hscroll-prev]');
+    var next = root.querySelector('[data-diva-hscroll-next]');
+
+    function pageAmount() {
+      var card = track.firstElementChild;
+      if (!card) return track.clientWidth * 0.8;
+      var styles = getComputedStyle(track);
+      var gap = parseFloat(styles.columnGap || styles.gap) || 16;
+      var cardW = card.getBoundingClientRect().width + gap;
+      var perView = Math.max(1, Math.floor(track.clientWidth / cardW));
+      return cardW * perView;
+    }
+    function update() {
+      var max = track.scrollWidth - track.clientWidth - 2;
+      if (prev) { prev.disabled = track.scrollLeft <= 2; prev.classList.toggle('is-disabled', prev.disabled); }
+      if (next) { next.disabled = track.scrollLeft >= max; next.classList.toggle('is-disabled', next.disabled); }
+    }
+    var behavior = reduceMotion ? 'auto' : 'smooth';
+    if (next) next.addEventListener('click', function () { track.scrollBy({ left: pageAmount(), behavior: behavior }); });
+    if (prev) prev.addEventListener('click', function () { track.scrollBy({ left: -pageAmount(), behavior: behavior }); });
+    track.addEventListener('scroll', function () { window.requestAnimationFrame(update); }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+
+  /* ---------------------------------------------------------
      BOOT
      --------------------------------------------------------- */
   function boot(scope) {
     (scope || document).querySelectorAll('[data-diva-slider]').forEach(initSlider);
+    (scope || document).querySelectorAll('[data-diva-hscroll]').forEach(initHScroll);
     syncWishlistButtons();
     initFades(scope);
   }

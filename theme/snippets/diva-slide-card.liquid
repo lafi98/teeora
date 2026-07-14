@@ -1,0 +1,71 @@
+{%- comment -%}
+  DIVA — slide card (used inside horizontal product sliders)
+  Params:
+    product        (object, required)
+    show_subtitle  (boolean) show product type as subtitle, default true
+    show_price     (boolean) show price, default false
+    sizes          (string)  responsive sizes attr
+{%- endcomment -%}
+
+{%- liquid
+  assign show_subtitle = show_subtitle | default: true, allow_false: true
+  assign show_price = show_price | default: false, allow_false: true
+  assign sizes = sizes | default: '(min-width: 990px) 20vw, (min-width: 750px) 33vw, 50vw'
+  assign on_sale = false
+  if product.compare_at_price > product.price and product.available
+    assign on_sale = true
+  endif
+-%}
+
+<article class="diva-slide-card" data-product-id="{{ product.id }}">
+  <a class="diva-slide-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    {%- if product.featured_image -%}
+      {{
+        product.featured_image
+        | image_url: width: 700
+        | image_tag:
+          widths: '200, 300, 450, 600, 700',
+          sizes: sizes,
+          class: 'diva-slide-card__img',
+          loading: 'lazy',
+          alt: product.featured_image.alt | default: product.title | escape
+      }}
+    {%- else -%}
+      <span class="diva-slide-card__img diva-card__noimg" role="img" aria-label="{{ product.title | escape }}"></span>
+    {%- endif -%}
+
+    {%- comment -%} One automatic badge, by priority {%- endcomment -%}
+    {%- if product.available == false -%}
+      <span class="diva-badge diva-badge--soldout">Sold out</span>
+    {%- elsif product.tags contains 'new' or product.tags contains 'New' -%}
+      <span class="diva-badge diva-badge--new">New</span>
+    {%- elsif product.tags contains 'best seller' or product.tags contains 'bestseller' or product.tags contains 'Best Seller' -%}
+      <span class="diva-badge diva-badge--bestseller">Best Seller</span>
+    {%- elsif on_sale -%}
+      <span class="diva-badge diva-badge--sale">Sale</span>
+    {%- endif -%}
+  </a>
+
+  <div class="diva-slide-card__info">
+    <div class="diva-slide-card__text">
+      <a class="diva-slide-card__title" href="{{ product.url }}">{{ product.title }}</a>
+      {%- if show_subtitle and product.type != blank -%}
+        <span class="diva-slide-card__sub">{{ product.type }}</span>
+      {%- endif -%}
+      {%- if show_price -%}
+        <span class="diva-slide-card__price">
+          {{ product.price | money }}{% if on_sale %}<s>{{ product.compare_at_price | money }}</s>{% endif %}
+        </span>
+      {%- endif -%}
+    </div>
+    <button
+      type="button"
+      class="diva-slide-card__bookmark"
+      data-diva-wishlist="{{ product.id }}"
+      aria-label="Save {{ product.title | escape }}"
+      aria-pressed="false"
+    >
+      <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4V4z"/></svg>
+    </button>
+  </div>
+</article>

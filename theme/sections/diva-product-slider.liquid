@@ -1,0 +1,86 @@
+{%- comment -%}
+  DIVA — Product Slider (New Arrivals)
+  Horizontal, snap-scrolling product carousel from a chosen collection.
+  No hardcoded products; if the collection is empty it shows a note.
+{%- endcomment -%}
+
+{{ 'diva.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'diva.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign s = section.settings
+  assign coll = collections[s.collection]
+-%}
+
+<section
+  class="diva diva-section"
+  style="
+    --diva-slide-cols: {{ s.slides_desktop }};
+    --diva-slide-cols-tablet: {{ s.slides_tablet }};
+    --diva-slide-cols-mobile: {{ s.slides_mobile }};
+    --diva-gap: {{ s.gap }}px;
+    --diva-pad: {{ s.padding_top }}px;
+    padding-bottom: {{ s.padding_bottom }}px;
+    background: {{ s.background }};
+  "
+>
+  <div class="diva__container">
+    <div class="diva-hscroll diva-fade" data-diva-hscroll>
+      <div class="diva-hscroll__head">
+        <div class="diva-hscroll__headings">
+          {%- if s.heading != blank -%}<h2 class="diva-hscroll__title">{{ s.heading }}</h2>{%- endif -%}
+          {%- if s.heading_secondary != blank -%}<span class="diva-hscroll__title diva-hscroll__title--muted">{{ s.heading_secondary }}</span>{%- endif -%}
+        </div>
+        <div class="diva-hscroll__arrows">
+          <button class="diva-hscroll__arrow" type="button" data-diva-hscroll-prev aria-label="Scroll left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="diva-hscroll__arrow" type="button" data-diva-hscroll-next aria-label="Scroll right">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      {%- if coll != blank and coll.products.size > 0 -%}
+        <div class="diva-hscroll__track" data-diva-hscroll-track>
+          {%- for product in coll.products limit: s.products_count -%}
+            {%- render 'diva-slide-card', product: product, show_subtitle: s.show_subtitle, show_price: s.show_price -%}
+          {%- endfor -%}
+        </div>
+        {%- if s.link_label != blank -%}
+          <a class="diva-hscroll__link" href="{{ s.link_url | default: coll.url | default: '#' }}">{{ s.link_label }}</a>
+        {%- endif -%}
+      {%- else -%}
+        <p class="diva-hscroll__empty">Choose a collection in the theme editor to populate this slider.</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Diva Product Slider",
+  "tag": "section",
+  "class": "diva-section-wrapper",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "New Arrivals" },
+    { "type": "text", "id": "heading_secondary", "label": "Secondary heading (muted)" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "products_count", "label": "Products to show", "min": 4, "max": 20, "step": 1, "default": 12 },
+    { "type": "checkbox", "id": "show_subtitle", "label": "Show product type as subtitle", "default": true },
+    { "type": "checkbox", "id": "show_price", "label": "Show price", "default": false },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Shop new arrivals" },
+    { "type": "url", "id": "link_url", "label": "Link URL" },
+    { "type": "header", "content": "Slides per view" },
+    { "type": "range", "id": "slides_desktop", "label": "Desktop", "min": 3, "max": 6, "step": 1, "default": 5 },
+    { "type": "range", "id": "slides_tablet", "label": "Tablet", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "range", "id": "slides_mobile", "label": "Mobile", "min": 1, "max": 3, "step": 1, "default": 2 },
+    { "type": "range", "id": "gap", "label": "Gap", "min": 8, "max": 40, "step": 2, "unit": "px", "default": 20 },
+    { "type": "header", "content": "Spacing & colour" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 24 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#faf8f3" }
+  ],
+  "presets": [ { "name": "Diva Product Slider", "category": "Diva" } ]
+}
+{% endschema %}

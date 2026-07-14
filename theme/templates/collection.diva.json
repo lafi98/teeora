@@ -1,20 +1,106 @@
 /*
- * DIVA collection template — a clean, fully dynamic luxury listing.
- * Assign to any collection via Products → Collections → (collection)
- * → Theme template → "diva". It renders whatever products are in the
- * collection, with a dynamic banner, sort and pagination. No hardcoded
- * or placeholder products. Header, footer and navigation are unchanged
- * (they come from the theme's section groups).
+ * DIVA collection template — western-editorial layout.
+ * Order: hero → new arrivals slider → best-sellers featured → two
+ * category-card rows → testimonials → dynamic collection grid.
+ * Every section is editable in the Theme Editor. The final grid renders
+ * the current collection's products dynamically (no hardcoded products).
+ * Header, footer and navigation are unchanged (theme section groups).
  */
 {
   "sections": {
-    "main": {
+    "hero": {
+      "type": "diva-promo-banner",
+      "settings": {
+        "eyebrow": "New Season",
+        "heading": "Western Wear & Cowboy Boots",
+        "text": "Handcrafted boots and apparel, built to last.",
+        "button_label": "Shop the collection",
+        "button_link": "shopify://collections/all",
+        "height": 560,
+        "overlay_opacity": 35
+      }
+    },
+    "new_arrivals": {
+      "type": "diva-product-slider",
+      "settings": {
+        "heading": "New Arrivals",
+        "heading_secondary": "",
+        "products_count": 12,
+        "show_subtitle": true,
+        "show_price": false,
+        "link_label": "Shop new arrivals",
+        "slides_desktop": 5,
+        "slides_tablet": 3,
+        "slides_mobile": 2,
+        "gap": 20,
+        "padding_top": 56,
+        "padding_bottom": 24,
+        "background": "#faf8f3"
+      }
+    },
+    "best_sellers": {
+      "type": "diva-featured-slider",
+      "settings": {
+        "link_top_label": "Shop New Arrivals",
+        "link_label": "Shop Best Sellers",
+        "heading": "Best Sellers",
+        "products_count": 8,
+        "show_subtitle": true,
+        "show_price": false,
+        "slides_desktop": 3,
+        "slides_tablet": 2,
+        "slides_mobile": 2,
+        "gap": 20,
+        "padding_top": 24,
+        "padding_bottom": 56,
+        "background": "#faf8f3"
+      }
+    },
+    "cats_audience": {
+      "type": "diva-category-cards",
+      "settings": { "heading": "", "padding_top": 40, "padding_bottom": 24, "background": "#faf8f3" },
+      "blocks": {
+        "c1": { "type": "card", "settings": { "label": "Mens", "link": "shopify://collections/all" } },
+        "c2": { "type": "card", "settings": { "label": "Womens", "link": "shopify://collections/all" } },
+        "c3": { "type": "card", "settings": { "label": "Kids", "link": "shopify://collections/all" } }
+      },
+      "block_order": ["c1", "c2", "c3"]
+    },
+    "cats_product": {
+      "type": "diva-category-cards",
+      "settings": { "heading": "", "padding_top": 24, "padding_bottom": 56, "background": "#faf8f3" },
+      "blocks": {
+        "c1": { "type": "card", "settings": { "label": "Boots", "link": "shopify://collections/all" } },
+        "c2": { "type": "card", "settings": { "label": "Apparel", "link": "shopify://collections/all" } },
+        "c3": { "type": "card", "settings": { "label": "Accessories", "link": "shopify://collections/all" } }
+      },
+      "block_order": ["c1", "c2", "c3"]
+    },
+    "testimonials": {
+      "type": "diva-testimonials",
+      "settings": {
+        "heading": "Western Wear & Cowboy Boots for Everyone",
+        "slides_desktop": 4,
+        "slides_tablet": 2,
+        "slides_mobile": 1,
+        "gap": 20,
+        "padding_top": 56,
+        "padding_bottom": 56,
+        "background": "#faf8f3"
+      },
+      "blocks": {
+        "r1": { "type": "review", "settings": { "rating": 5, "product_label": "The Cartwright - Scotch", "title": "Comfort and quality", "quote": "My number one concern is quality and comfort — these hit all the spots. I will absolutely purchase another pair.", "author": "Thad J." } },
+        "r2": { "type": "review", "settings": { "rating": 5, "product_label": "The Sadie - Midnight", "title": "Made for walkin!", "quote": "Bought and wore em same night — walked over 3 miles, feet felt great. A fan for life!", "author": "Michelle" } },
+        "r3": { "type": "review", "settings": { "rating": 5, "product_label": "The Daisy - Bone", "title": "They go with everything!", "quote": "My third pair. So comfortable and they look great on. True to size.", "author": "Rena A." } },
+        "r4": { "type": "review", "settings": { "rating": 5, "product_label": "The Dean - Midnight", "title": "Comfortable and Stylish!", "quote": "Very pleased with the comfort and versatility. I wear them with suits and with jeans.", "author": "Donnell W." } }
+      },
+      "block_order": ["r1", "r2", "r3", "r4"]
+    },
+    "grid": {
       "type": "diva-collection",
       "settings": {
-        "show_banner": true,
-        "use_collection_image": true,
-        "show_description": true,
-        "overlay_opacity": 35,
+        "show_banner": false,
+        "show_description": false,
         "per_page": 24,
         "columns": 4,
         "columns_tablet": 3,
@@ -31,5 +117,5 @@
       }
     }
   },
-  "order": ["main"]
+  "order": ["hero", "new_arrivals", "best_sellers", "cats_audience", "cats_product", "testimonials", "grid"]
 }
