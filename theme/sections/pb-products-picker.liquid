@@ -1,10 +1,9 @@
 {%- comment -%}
   PB — Products (Product Picker blocks)
-  Each block holds ONE Shopify Product Picker. The card auto-renders
-  that product's live data (image, hover image, title, price,
-  compare-at, sale badge, wishlist, quick view, add to cart, URL).
-  No collections, no collection.products, no demo data. Reorder cards
-  by dragging the blocks in the Theme Editor.
+  Horizon theme-block section: each block is a "Product" theme block
+  (blocks/pb-product-picker.liquid) holding one Shopify Product Picker.
+  The card auto-renders that product's live data. No collections, no
+  collection.products, no demo data. Reorder by dragging the blocks.
 {%- endcomment -%}
 {{ 'pb.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'pb.js' | asset_url }}" defer></script>
@@ -23,27 +22,7 @@
     {%- endif -%}
 
     <div class="pb-fc__grid">
-      {%- for block in section.blocks -%}
-        {%- assign prod = block.settings.product -%}
-        {%- if prod != blank -%}
-          {%- render 'pb-product-card',
-            product: prod,
-            block_attributes: block.shopify_attributes,
-            show_price: s.show_price,
-            show_vendor: s.show_vendor,
-            show_quick_add: s.show_add_to_cart,
-            show_quick_view: s.show_quick_view,
-            show_wishlist: s.show_wishlist,
-            show_badges: s.show_badges
-          -%}
-        {%- elsif request.design_mode -%}
-          {%- comment -%} Editor-only hint for a block with no product selected yet {%- endcomment -%}
-          <div class="pb-pc" {{ block.shopify_attributes }}>
-            <div class="pb-pc__media"><span class="pb-pc__img pb-noimg" role="img" aria-label="No product selected"></span></div>
-            <div class="pb-pc__info"><span class="pb-mpc__ph">Select a product for this block</span></div>
-          </div>
-        {%- endif -%}
-      {%- endfor -%}
+      {% content_for 'blocks' %}
     </div>
   </div>
 </section>
@@ -78,20 +57,19 @@
     { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
   ],
   "blocks": [
-    {
-      "type": "product",
-      "name": "Product",
-      "settings": [
-        { "type": "product", "id": "product", "label": "Product", "info": "Pick a product you created in Shopify Admin. Its image, title, price and badges load automatically." }
-      ]
-    }
+    { "type": "pb-product-picker" }
   ],
   "max_blocks": 24,
   "presets": [
     {
       "name": "PB Products (Picker)",
       "category": "Products",
-      "blocks": [ { "type": "product" }, { "type": "product" }, { "type": "product" }, { "type": "product" } ]
+      "blocks": [
+        { "type": "pb-product-picker" },
+        { "type": "pb-product-picker" },
+        { "type": "pb-product-picker" },
+        { "type": "pb-product-picker" }
+      ]
     }
   ]
 }

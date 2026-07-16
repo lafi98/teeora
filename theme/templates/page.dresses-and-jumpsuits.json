@@ -20,7 +20,7 @@
     "featured_1": {
       "type": "pb-products-picker",
       "settings": { "heading": "Featured Collection", "columns": 4 },
-      "blocks": { "p1": { "type": "product" }, "p2": { "type": "product" }, "p3": { "type": "product" }, "p4": { "type": "product" } },
+      "blocks": { "p1": { "type": "pb-product-picker" }, "p2": { "type": "pb-product-picker" }, "p3": { "type": "pb-product-picker" }, "p4": { "type": "pb-product-picker" } },
       "block_order": ["p1", "p2", "p3", "p4"]
     },
     "promo_1": {
@@ -30,7 +30,7 @@
     "featured_2": {
       "type": "pb-products-picker",
       "settings": { "heading": "New In", "columns": 4 },
-      "blocks": { "p1": { "type": "product" }, "p2": { "type": "product" }, "p3": { "type": "product" }, "p4": { "type": "product" } },
+      "blocks": { "p1": { "type": "pb-product-picker" }, "p2": { "type": "pb-product-picker" }, "p3": { "type": "pb-product-picker" }, "p4": { "type": "pb-product-picker" } },
       "block_order": ["p1", "p2", "p3", "p4"]
     },
     "testimonials": {
@@ -46,7 +46,7 @@
     "mens": {
       "type": "pb-products-picker",
       "settings": { "heading": "Men's Collection", "columns": 4 },
-      "blocks": { "p1": { "type": "product" }, "p2": { "type": "product" }, "p3": { "type": "product" }, "p4": { "type": "product" } },
+      "blocks": { "p1": { "type": "pb-product-picker" }, "p2": { "type": "pb-product-picker" }, "p3": { "type": "pb-product-picker" }, "p4": { "type": "pb-product-picker" } },
       "block_order": ["p1", "p2", "p3", "p4"]
     },
     "features": {
