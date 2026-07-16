@@ -18,7 +18,7 @@
       "block_order": ["c1", "c2", "c3"]
     },
     "featured_1": {
-      "type": "pb-product-grid",
+      "type": "pb-products-picker",
       "settings": { "heading": "Featured Collection", "columns": 4 },
       "blocks": { "p1": { "type": "product" }, "p2": { "type": "product" }, "p3": { "type": "product" }, "p4": { "type": "product" } },
       "block_order": ["p1", "p2", "p3", "p4"]
@@ -28,7 +28,7 @@
       "settings": { "heading": "Seasonal Offer", "text": "Discover our newest edit of dresses and jumpsuits." }
     },
     "featured_2": {
-      "type": "pb-product-grid",
+      "type": "pb-products-picker",
       "settings": { "heading": "New In", "columns": 4 },
       "blocks": { "p1": { "type": "product" }, "p2": { "type": "product" }, "p3": { "type": "product" }, "p4": { "type": "product" } },
       "block_order": ["p1", "p2", "p3", "p4"]
@@ -44,7 +44,7 @@
       "settings": { "heading": "Featured Product", "text": "Highlight a hero product or story here.", "height": 460 }
     },
     "mens": {
-      "type": "pb-product-grid",
+      "type": "pb-products-picker",
       "settings": { "heading": "Men's Collection", "columns": 4 },
       "blocks": { "p1": { "type": "product" }, "p2": { "type": "product" }, "p3": { "type": "product" }, "p4": { "type": "product" } },
       "block_order": ["p1", "p2", "p3", "p4"]

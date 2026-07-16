@@ -56,8 +56,58 @@
     clearTimeout(toast.__t); toast.__t = setTimeout(function () { toast.style.opacity = '0'; }, 2000);
   }
 
+  /* ---- Quick view (modal from /products/handle.js) ---- */
+  var modal;
+  function ensureModal() {
+    if (modal) return modal;
+    modal = document.createElement('div');
+    modal.className = 'pb-modal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Product quick view');
+    modal.innerHTML =
+      '<div class="pb-modal__backdrop" data-pb-close></div>' +
+      '<div class="pb-modal__dialog">' +
+        '<button class="pb-modal__close" data-pb-close aria-label="Close">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
+        '</button>' +
+        '<div class="pb-modal__media"></div><div class="pb-modal__body"></div>' +
+      '</div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function (e) { if (e.target.hasAttribute('data-pb-close')) closeModal(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+    return modal;
+  }
+  function closeModal() { if (modal) { modal.classList.remove('is-open'); document.body.style.overflow = ''; } }
+  function openQuickView(url) {
+    if (!window.fetch) { window.location.href = url; return; }
+    var m = ensureModal();
+    var media = m.querySelector('.pb-modal__media'), body = m.querySelector('.pb-modal__body');
+    media.innerHTML = ''; body.innerHTML = '<p class="pb-modal__price">Loading…</p>';
+    m.classList.add('is-open'); document.body.style.overflow = 'hidden';
+    fetch(url + '.js', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (p) {
+        var img = p.featured_image || (p.images && p.images[0]);
+        media.innerHTML = img ? '<img src="' + img + '" alt="' + (p.title || '') + '">' : '';
+        var price = (p.price / 100).toLocaleString(undefined, { style: 'currency', currency: (window.Shopify && Shopify.currency && Shopify.currency.active) || 'USD' });
+        var desc = (p.description || '').replace(/<[^>]*>/g, '').slice(0, 220);
+        var vId = p.variants && p.variants.length ? p.variants[0].id : null;
+        body.innerHTML =
+          '<h3 class="pb-modal__title">' + p.title + '</h3>' +
+          '<div class="pb-modal__price">' + price + '</div>' +
+          '<p class="pb-modal__desc">' + desc + '…</p>' +
+          '<button class="pb-btn" data-pb-add="' + vId + '">Add to cart</button>' +
+          '<a class="pb-btn pb-btn--outline" href="' + p.url + '">View full details</a>';
+      })
+      .catch(function () { body.innerHTML = '<p class="pb-modal__price">Unable to load product.</p>'; });
+  }
+
   /* ---- Delegated actions ---- */
   document.addEventListener('click', function (e) {
+    var qv = e.target.closest('[data-pb-quickview]');
+    if (qv) { e.preventDefault(); openQuickView(qv.getAttribute('data-pb-quickview')); return; }
+
     var wish = e.target.closest('[data-pb-wishlist]');
     if (wish) {
       e.preventDefault();

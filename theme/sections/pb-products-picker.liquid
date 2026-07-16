@@ -1,0 +1,93 @@
+{%- comment -%}
+  PB — Products (Product Picker blocks)
+  Each block holds ONE Shopify Product Picker. The card auto-renders
+  that product's live data (image, hover image, title, price,
+  compare-at, sale badge, wishlist, quick view, add to cart, URL).
+  No collections, no collection.products, no demo data. Reorder cards
+  by dragging the blocks in the Theme Editor.
+{%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'pb.js' | asset_url }}" defer></script>
+{%- assign s = section.settings -%}
+<section
+  class="pb pb-section"
+  style="--pb-pt: {{ s.padding_top }}px; --pb-pb: {{ s.padding_bottom }}px; --pb-section-bg: {{ s.background }}; --pb-cols: {{ s.columns }}; --pb-cols-tablet: {{ s.columns_tablet }}; --pb-cols-mobile: {{ s.columns_mobile }}; --pb-gap: {{ s.gap }}px;"
+>
+  <div class="pb__container">
+    {%- if s.eyebrow != blank or s.heading != blank or s.subheading != blank -%}
+      <div class="pb-head">
+        {%- if s.eyebrow != blank -%}<p class="pb-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+        {%- if s.heading != blank -%}<h2 class="pb-title">{{ s.heading }}</h2>{%- endif -%}
+        {%- if s.subheading != blank -%}<p class="pb-subtext">{{ s.subheading }}</p>{%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="pb-fc__grid">
+      {%- for block in section.blocks -%}
+        {%- assign prod = block.settings.product -%}
+        {%- if prod != blank -%}
+          {%- render 'pb-product-card',
+            product: prod,
+            block_attributes: block.shopify_attributes,
+            show_price: s.show_price,
+            show_vendor: s.show_vendor,
+            show_quick_add: s.show_add_to_cart,
+            show_quick_view: s.show_quick_view,
+            show_wishlist: s.show_wishlist,
+            show_badges: s.show_badges
+          -%}
+        {%- elsif request.design_mode -%}
+          {%- comment -%} Editor-only hint for a block with no product selected yet {%- endcomment -%}
+          <div class="pb-pc" {{ block.shopify_attributes }}>
+            <div class="pb-pc__media"><span class="pb-pc__img pb-noimg" role="img" aria-label="No product selected"></span></div>
+            <div class="pb-pc__info"><span class="pb-mpc__ph">Select a product for this block</span></div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PB Products (picker)",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "text", "id": "subheading", "label": "Subheading" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 6, "step": 1, "default": 4 },
+    { "type": "range", "id": "columns_tablet", "label": "Columns (tablet)", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "range", "id": "columns_mobile", "label": "Columns (mobile)", "min": 1, "max": 3, "step": 1, "default": 2 },
+    { "type": "range", "id": "gap", "label": "Gap", "min": 4, "max": 40, "step": 2, "unit": "px", "default": 20 },
+    { "type": "header", "content": "Card options" },
+    { "type": "checkbox", "id": "show_price", "label": "Show price", "default": true },
+    { "type": "checkbox", "id": "show_vendor", "label": "Show vendor", "default": false },
+    { "type": "checkbox", "id": "show_badges", "label": "Show sale / new badges", "default": true },
+    { "type": "checkbox", "id": "show_wishlist", "label": "Show wishlist icon", "default": true },
+    { "type": "checkbox", "id": "show_quick_view", "label": "Show quick view button", "default": true },
+    { "type": "checkbox", "id": "show_add_to_cart", "label": "Show add to cart button", "default": true },
+    { "type": "header", "content": "Spacing & colour" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product", "info": "Pick a product you created in Shopify Admin. Its image, title, price and badges load automatically." }
+      ]
+    }
+  ],
+  "max_blocks": 24,
+  "presets": [
+    {
+      "name": "PB Products (picker)",
+      "blocks": [ { "type": "product" }, { "type": "product" }, { "type": "product" }, { "type": "product" } ]
+    }
+  ]
+}
+{% endschema %}

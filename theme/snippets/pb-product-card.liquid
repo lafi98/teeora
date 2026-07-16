@@ -7,6 +7,7 @@
   assign show_price = show_price | default: true, allow_false: true
   assign show_vendor = show_vendor | default: false, allow_false: true
   assign show_quick_add = show_quick_add | default: true, allow_false: true
+  assign show_quick_view = show_quick_view | default: false, allow_false: true
   assign show_wishlist = show_wishlist | default: true, allow_false: true
   assign show_badges = show_badges | default: true, allow_false: true
   assign sizes = sizes | default: '(min-width:990px) 22vw, (min-width:750px) 33vw, 50vw'
@@ -17,7 +18,7 @@
   endif
   assign v = product.selected_or_first_available_variant
 -%}
-<article class="pb-pc" data-product-id="{{ product.id }}">
+<article class="pb-pc" data-product-id="{{ product.id }}" {{ block_attributes }}>
   <a class="pb-pc__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
     {%- if product.featured_image -%}
       {{ product.featured_image | image_url: width: 800 | image_tag: widths: '200,300,450,600,800', sizes: sizes, class: 'pb-pc__img pb-pc__img--front', loading: 'lazy', alt: product.featured_image.alt | default: product.title | escape }}
@@ -42,9 +43,14 @@
     </button>
   {%- endif -%}
 
-  {%- if show_quick_add and product.available -%}
+  {%- if show_quick_view or show_quick_add -%}
     <div class="pb-pc__quick">
-      <button type="button" class="pb-pc__quick-btn" data-pb-add="{{ v.id }}">Quick add</button>
+      {%- if show_quick_view -%}
+        <button type="button" class="pb-pc__quick-btn pb-pc__quick-btn--alt" data-pb-quickview="{{ product.url }}" aria-label="Quick view {{ product.title | escape }}">Quick view</button>
+      {%- endif -%}
+      {%- if show_quick_add and product.available -%}
+        <button type="button" class="pb-pc__quick-btn" data-pb-add="{{ v.id }}" aria-label="Add {{ product.title | escape }} to cart">Add to cart</button>
+      {%- endif -%}
     </div>
   {%- endif -%}
 
