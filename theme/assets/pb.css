@@ -95,6 +95,23 @@
 .pb-pc__price .pb-pc__sale { color: var(--pb-accent); }
 .pb-fc__empty { text-align: center; color: var(--pb-muted); padding: 3rem 1rem; }
 
+/* ---------- Manual product card (blocks, no product data) ---------- */
+.pb-mpc { display: flex; flex-direction: column; }
+.pb-mpc__media { position: relative; display: block; overflow: hidden; aspect-ratio: 3/4; background: var(--pb-soft); border-radius: var(--pb-radius); }
+.pb-mpc__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 600ms var(--pb-ease); }
+.pb-mpc:hover .pb-mpc__img { transform: scale(1.04); }
+.pb-mpc__badge { position: absolute; top: 0.6rem; left: 0.6rem; z-index: 2; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; padding: 0.3rem 0.55rem; border-radius: 3px; background: var(--pb-badge-bg, #1b1b1b); }
+.pb-mpc__swatches { display: flex; gap: 0.35rem; padding-top: 0.7rem; justify-content: var(--pb-mpc-justify, center); flex-wrap: wrap; }
+.pb-swatch { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.15); background: var(--pb-sw, #ccc); }
+.pb-mpc__info { padding-top: 0.7rem; display: flex; flex-direction: column; gap: 0.3rem; text-align: var(--pb-mpc-align, center); align-items: var(--pb-mpc-items, center); }
+.pb-mpc__title { font-size: 0.95rem; color: var(--pb-ink); text-decoration: none; }
+.pb-mpc__title:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pb-mpc__price { font-size: 0.9rem; color: var(--pb-muted); display: flex; gap: 0.45rem; align-items: baseline; }
+.pb-mpc__price s { opacity: 0.6; }
+.pb-mpc__now { color: var(--pb-accent); }
+.pb-mpc__btn { margin-top: 0.6rem; }
+.pb-mpc__ph { color: var(--pb-muted); font-size: 0.8rem; text-align: center; padding: 0.5rem; opacity: 0.7; }
+
 /* ---------- 4/7 · PROMO BANNER ---------- */
 .pb-promo { position: relative; display: grid; overflow: hidden; min-height: var(--pb-promo-h, 380px); align-items: center; background: var(--pb-promo-bg, #1b1b1b); }
 .pb-promo__media { position: absolute; inset: 0; }

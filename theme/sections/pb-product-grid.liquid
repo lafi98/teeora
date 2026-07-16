@@ -1,0 +1,134 @@
+{%- comment -%}
+  PB — Manual Product Grid
+  Every "product" is an editable BLOCK. Nothing is pulled from Shopify:
+  no collection, no collection.products, no demo data. Each card renders
+  ONLY what the merchant enters in the Theme Editor. Blocks natively
+  support add / remove / reorder / duplicate.
+{%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<section
+  class="pb pb-section"
+  style="--pb-pt: {{ s.padding_top }}px; --pb-pb: {{ s.padding_bottom }}px; --pb-section-bg: {{ s.background }}; --pb-cols: {{ s.columns }}; --pb-cols-tablet: {{ s.columns_tablet }}; --pb-cols-mobile: {{ s.columns_mobile }}; --pb-gap: {{ s.gap }}px; --pb-mpc-align: {{ s.text_align }}; --pb-mpc-items: {{ s.align_items }}; --pb-mpc-justify: {{ s.align_items }};"
+>
+  <div class="pb__container">
+    {%- if s.heading != blank or s.subheading != blank -%}
+      <div class="pb-head">
+        {%- if s.eyebrow != blank -%}<p class="pb-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+        {%- if s.heading != blank -%}<h2 class="pb-title">{{ s.heading }}</h2>{%- endif -%}
+        {%- if s.subheading != blank -%}<p class="pb-subtext">{{ s.subheading }}</p>{%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="pb-fc__grid">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <div class="pb-mpc" {{ block.shopify_attributes }}>
+          {%- comment -%} Media (wrapped in a link only when a link is set) {%- endcomment -%}
+          {%- capture media -%}
+            {%- if b.image != blank -%}
+              {{ b.image | image_url: width: 800 | image_tag: widths: '200,300,450,600,800', sizes: '(min-width:990px) 22vw, (min-width:750px) 33vw, 50vw', class: 'pb-mpc__img', loading: 'lazy', alt: b.title | escape }}
+            {%- else -%}
+              <span class="pb-mpc__img pb-noimg" role="img" aria-label="{{ b.title | default: 'Product image' | escape }}"></span>
+            {%- endif -%}
+            {%- if b.badge != blank -%}<span class="pb-mpc__badge" style="--pb-badge-bg: {{ b.badge_color }};">{{ b.badge }}</span>{%- endif -%}
+          {%- endcapture -%}
+
+          {%- if b.link != blank -%}
+            <a class="pb-mpc__media" href="{{ b.link }}" aria-label="{{ b.title | default: 'View product' | escape }}">{{ media }}</a>
+          {%- else -%}
+            <div class="pb-mpc__media">{{ media }}</div>
+          {%- endif -%}
+
+          {%- comment -%} Optional colour swatches — comma-separated hex values {%- endcomment -%}
+          {%- if b.swatches != blank -%}
+            {%- assign colors = b.swatches | split: ',' -%}
+            <div class="pb-mpc__swatches">
+              {%- for c in colors -%}<span class="pb-swatch" style="--pb-sw: {{ c | strip }};" title="{{ c | strip }}"></span>{%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          <div class="pb-mpc__info">
+            {%- if b.title != blank -%}
+              {%- if b.link != blank -%}<a class="pb-mpc__title" href="{{ b.link }}">{{ b.title }}</a>
+              {%- else -%}<span class="pb-mpc__title">{{ b.title }}</span>{%- endif -%}
+            {%- endif -%}
+
+            {%- if b.price != blank or b.compare_price != blank -%}
+              <div class="pb-mpc__price">
+                {%- if b.compare_price != blank and b.price != blank -%}
+                  <span class="pb-mpc__now">{{ b.price }}</span><s>{{ b.compare_price }}</s>
+                {%- elsif b.price != blank -%}
+                  <span>{{ b.price }}</span>
+                {%- else -%}
+                  <s>{{ b.compare_price }}</s>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            {%- if b.button_text != blank -%}
+              <a class="pb-btn pb-btn--outline pb-mpc__btn" href="{{ b.link | default: '#' }}">{{ b.button_text }}</a>
+            {%- endif -%}
+
+            {%- comment -%} Structural hint shown only in the editor for a still-empty block {%- endcomment -%}
+            {%- if b.image == blank and b.title == blank and b.price == blank and request.design_mode -%}
+              <span class="pb-mpc__ph">Empty product block — add an image, title and price</span>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PB Product Grid (manual)",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "text", "id": "subheading", "label": "Subheading" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 6, "step": 1, "default": 4 },
+    { "type": "range", "id": "columns_tablet", "label": "Columns (tablet)", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "range", "id": "columns_mobile", "label": "Columns (mobile)", "min": 1, "max": 3, "step": 1, "default": 2 },
+    { "type": "range", "id": "gap", "label": "Gap", "min": 4, "max": 40, "step": 2, "unit": "px", "default": 20 },
+    { "type": "select", "id": "text_align", "label": "Card text alignment", "options": [ {"value":"left","label":"Left"}, {"value":"center","label":"Center"} ], "default": "center" },
+    { "type": "select", "id": "align_items", "label": "Card items position", "options": [ {"value":"flex-start","label":"Left"}, {"value":"center","label":"Center"} ], "default": "center" },
+    { "type": "header", "content": "Spacing & colour" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Product image" },
+        { "type": "text", "id": "title", "label": "Product title" },
+        { "type": "text", "id": "price", "label": "Price", "info": "e.g. $49.00" },
+        { "type": "text", "id": "compare_price", "label": "Compare-at price", "info": "Shown struck-through. e.g. $69.00" },
+        { "type": "text", "id": "badge", "label": "Badge (optional)", "info": "e.g. Sale, New" },
+        { "type": "color", "id": "badge_color", "label": "Badge colour", "default": "#b23a48" },
+        { "type": "url", "id": "link", "label": "Product link" },
+        { "type": "text", "id": "button_text", "label": "Button text", "info": "Leave empty to hide the button." },
+        { "type": "text", "id": "swatches", "label": "Colour swatches (optional)", "info": "Comma-separated hex values, e.g. #000000, #b23a48, #f6f4ef" }
+      ]
+    }
+  ],
+  "max_blocks": 24,
+  "presets": [
+    {
+      "name": "PB Product Grid (manual)",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}
