@@ -1,0 +1,23 @@
+{%- comment -%} PB — Divider (16) {%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<div class="pb pb-section" style="--pb-pt: {{ s.padding_top }}px; --pb-pb: {{ s.padding_bottom }}px; --pb-section-bg: {{ s.background }}; --pb-divider-w: {{ s.width }}%; --pb-divider-thickness: {{ s.thickness }}px; --pb-divider-color: {{ s.color }};">
+  <div class="pb__container">
+    <hr class="pb-divider__line">
+  </div>
+</div>
+{% schema %}
+{
+  "name": "PB Divider",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "width", "label": "Line width", "min": 10, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "thickness", "label": "Thickness", "min": 1, "max": 8, "step": 1, "unit": "px", "default": 1 },
+    { "type": "color", "id": "color", "label": "Colour", "default": "#e7e4de" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 16 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 16 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "presets": [ { "name": "PB Divider" } ]
+}
+{% endschema %}

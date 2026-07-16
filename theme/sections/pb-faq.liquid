@@ -1,0 +1,44 @@
+{%- comment -%} PB — FAQ (12) — native <details>, no JS {%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<section class="pb pb-section" style="--pb-pt: {{ s.padding_top }}px; --pb-pb: {{ s.padding_bottom }}px; --pb-section-bg: {{ s.background }};">
+  <div class="pb__container">
+    {%- if s.heading != blank -%}<div class="pb-head"><h2 class="pb-title">{{ s.heading }}</h2></div>{%- endif -%}
+    <div class="pb-faq__list">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <details class="pb-faq__item"{% if b.open %} open{% endif %} {{ block.shopify_attributes }}>
+          <summary class="pb-faq__q">{{ b.question }}<span class="pb-faq__icon" aria-hidden="true">+</span></summary>
+          <div class="pb-faq__a">{{ b.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "PB FAQ",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Frequently asked questions" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "What is your return policy?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>We accept returns within 30 days of delivery.</p>" },
+        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false }
+      ]
+    }
+  ],
+  "max_blocks": 20,
+  "presets": [
+    { "name": "PB FAQ", "blocks": [ { "type": "faq" }, { "type": "faq" }, { "type": "faq" } ] }
+  ]
+}
+{% endschema %}

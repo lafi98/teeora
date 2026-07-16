@@ -1,0 +1,16 @@
+{%- comment -%} PB — Spacer (15) {%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<div class="pb pb-spacer" style="--pb-spacer-h: {{ s.height }}px; --pb-spacer-h-mobile: {{ s.height_mobile }}px; --pb-spacer-bg: {{ s.background }};" aria-hidden="true"></div>
+{% schema %}
+{
+  "name": "PB Spacer",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "height", "label": "Height (desktop)", "min": 8, "max": 200, "step": 4, "unit": "px", "default": 60 },
+    { "type": "range", "id": "height_mobile", "label": "Height (mobile)", "min": 4, "max": 160, "step": 4, "unit": "px", "default": 40 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "presets": [ { "name": "PB Spacer" } ]
+}
+{% endschema %}

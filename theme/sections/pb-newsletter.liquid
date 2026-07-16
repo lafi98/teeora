@@ -1,0 +1,38 @@
+{%- comment -%} PB — Newsletter (11) {%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<section class="pb pb-section pb-news" style="--pb-pt: {{ s.padding_top }}px; --pb-pb: {{ s.padding_bottom }}px; --pb-section-bg: {{ s.background }};">
+  <div class="pb__container">
+    <div class="pb-news__wrap">
+      {%- if s.heading != blank -%}<h2 class="pb-title">{{ s.heading }}</h2>{%- endif -%}
+      {%- if s.description != blank -%}<p class="pb-subtext">{{ s.description }}</p>{%- endif -%}
+      {%- form 'customer', class: 'pb-news__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input type="email" name="contact[email]" class="pb-news__input" placeholder="{{ s.placeholder | escape }}" aria-label="Email address" required>
+        <button type="submit" class="pb-news__btn">{{ s.button_label }}</button>
+      {%- endform -%}
+      {%- if form.posted_successfully? -%}
+        <p class="pb-news__msg" style="color: var(--pb-accent);">{{ s.success_message }}</p>
+      {%- elsif form.errors -%}
+        <p class="pb-news__msg">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "PB Newsletter",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Join our list" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Sign up for early access, new arrivals and members-only offers." },
+    { "type": "text", "id": "placeholder", "label": "Input placeholder", "default": "Enter your email" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Subscribe" },
+    { "type": "text", "id": "success_message", "label": "Success message", "default": "Thanks for subscribing." },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#f6f4ef" }
+  ],
+  "presets": [ { "name": "PB Newsletter" } ]
+}
+{% endschema %}

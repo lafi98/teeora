@@ -1,0 +1,24 @@
+{%- comment -%} PB — Custom HTML (17) {%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<div class="pb pb-section" style="--pb-pt: {{ s.padding_top }}px; --pb-pb: {{ s.padding_bottom }}px; --pb-section-bg: {{ s.background }}; --pb-html-w: {{ s.max_width }}px;">
+  <div class="pb__container">
+    <div class="pb-html__inner">
+      {{ s.code }}
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "PB Custom HTML",
+  "tag": "section",
+  "settings": [
+    { "type": "html", "id": "code", "label": "Custom HTML", "default": "<p style=\"text-align:center\">Add your custom HTML or embed code here.</p>" },
+    { "type": "range", "id": "max_width", "label": "Max width", "min": 480, "max": 1360, "step": 20, "unit": "px", "default": 1000 },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 40 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "presets": [ { "name": "PB Custom HTML" } ]
+}
+{% endschema %}

@@ -1,0 +1,61 @@
+{%- comment -%} PB — Testimonials (6) {%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<section class="pb pb-section" style="--pb-pt: {{ s.padding_top }}px; --pb-pb: {{ s.padding_bottom }}px; --pb-section-bg: {{ s.background }}; --pb-cols: {{ s.columns }}; --pb-gap: {{ s.gap }}px;">
+  <div class="pb__container">
+    {%- if s.heading != blank -%}<div class="pb-head"><h2 class="pb-title">{{ s.heading }}</h2></div>{%- endif -%}
+    <div class="pb-testi__grid">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <figure class="pb-testi-card" {{ block.shopify_attributes }}>
+          <div class="pb-testi-card__stars" aria-label="Rated {{ b.rating }} out of 5">
+            {% for i in (1..5) %}{% if i <= b.rating %}★{% else %}☆{% endif %}{% endfor %}
+          </div>
+          {%- if b.review != blank -%}<blockquote class="pb-testi-card__review">{{ b.review }}</blockquote>{%- endif -%}
+          <figcaption class="pb-testi-card__person">
+            {%- if b.image != blank -%}
+              {{ b.image | image_url: width: 100 | image_tag: widths: '46,92', sizes: '46px', class: 'pb-testi-card__avatar', loading: 'lazy', alt: b.name | escape }}
+            {%- else -%}
+              <span class="pb-testi-card__avatar" aria-hidden="true"></span>
+            {%- endif -%}
+            <span>
+              {%- if b.name != blank -%}<span class="pb-testi-card__name">{{ b.name }}</span>{%- endif -%}
+              {%- if b.job != blank -%}<span class="pb-testi-card__job">{{ b.job }}</span>{%- endif -%}
+            </span>
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "PB Testimonials",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What our customers say" },
+    { "type": "range", "id": "columns", "label": "Columns", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "range", "id": "gap", "label": "Gap", "min": 4, "max": 40, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#f6f4ef" }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Customer image" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Jane Doe" },
+        { "type": "text", "id": "job", "label": "Job title", "default": "Verified Buyer" },
+        { "type": "textarea", "id": "review", "label": "Review", "default": "Absolutely love it — the quality exceeded my expectations." },
+        { "type": "range", "id": "rating", "label": "Rating", "min": 1, "max": 5, "step": 1, "default": 5 }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    { "name": "PB Testimonials", "blocks": [ { "type": "testimonial" }, { "type": "testimonial" }, { "type": "testimonial" } ] }
+  ]
+}
+{% endschema %}

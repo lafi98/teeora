@@ -1,0 +1,43 @@
+{%- comment -%} PB — Sale Countdown Banner (10) {%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'pb.js' | asset_url }}" defer></script>
+{%- liquid
+  assign s = section.settings
+  assign ov = s.overlay_opacity | divided_by: 100.0
+-%}
+<section class="pb pb-count" style="--pb-count-h: {{ s.height }}px; --pb-count-ov: {{ ov }};">
+  <div class="pb-count__media">
+    {%- if s.image != blank -%}
+      {{ s.image | image_url: width: 2400 | image_tag: widths: '750,1100,1500,1900,2400', sizes: '100vw', class: 'pb-count__img', loading: 'lazy', alt: s.heading | escape }}
+    {%- endif -%}
+    <span class="pb-count__overlay"></span>
+  </div>
+  <div class="pb-count__content">
+    {%- if s.heading != blank -%}<h2 class="pb-count__title">{{ s.heading }}</h2>{%- endif -%}
+    {%- if s.subheading != blank -%}<p class="pb-count__sub">{{ s.subheading }}</p>{%- endif -%}
+    <div class="pb-count__timer" data-pb-countdown="{{ s.end_date }}">
+      <div class="pb-count__unit"><span class="pb-count__num" data-pb-d>00</span><span class="pb-count__lbl">Days</span></div>
+      <div class="pb-count__unit"><span class="pb-count__num" data-pb-h>00</span><span class="pb-count__lbl">Hours</span></div>
+      <div class="pb-count__unit"><span class="pb-count__num" data-pb-m>00</span><span class="pb-count__lbl">Minutes</span></div>
+      <div class="pb-count__unit"><span class="pb-count__num" data-pb-s>00</span><span class="pb-count__lbl">Seconds</span></div>
+    </div>
+    {%- if s.button_label != blank -%}<a class="pb-btn pb-btn--light" href="{{ s.button_link | default: '#' }}">{{ s.button_label }}</a>{%- endif -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "PB Sale Countdown",
+  "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 45 },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Season Sale" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Ends soon — up to 50% off" },
+    { "type": "text", "id": "end_date", "label": "End date & time", "default": "2026-12-31 23:59", "info": "Format: YYYY-MM-DD HH:MM (store timezone)." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the sale" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "range", "id": "height", "label": "Height", "min": 300, "max": 720, "step": 20, "unit": "px", "default": 440 }
+  ],
+  "presets": [ { "name": "PB Sale Countdown" } ]
+}
+{% endschema %}

@@ -1,0 +1,79 @@
+{%- comment -%}
+  PB — Featured Collection (3 / 5 / 8)
+  Collection PICKER only. No products are hardcoded. When a collection
+  is selected in the editor its products appear automatically.
+{%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- if section.settings.show_quick_add or section.settings.show_wishlist -%}
+  <script src="{{ 'pb.js' | asset_url }}" defer></script>
+{%- endif -%}
+{%- liquid
+  assign s = section.settings
+  assign coll = collections[s.collection]
+  assign limit = s.per_row | times: s.rows
+-%}
+<section class="pb pb-section" style="--pb-pt: {{ s.padding_top }}px; --pb-pb: {{ s.padding_bottom }}px; --pb-section-bg: {{ s.background }}; --pb-cols: {{ s.per_row }}; --pb-cols-tablet: {{ s.per_row_tablet }}; --pb-cols-mobile: {{ s.per_row_mobile }}; --pb-gap: {{ s.gap }}px;">
+  <div class="pb__container">
+    {%- if s.heading != blank or s.subheading != blank -%}
+      <div class="pb-head">
+        {%- if s.eyebrow != blank -%}<p class="pb-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+        {%- if s.heading != blank -%}<h2 class="pb-title">{{ s.heading }}</h2>{%- endif -%}
+        {%- if s.subheading != blank -%}<p class="pb-subtext">{{ s.subheading }}</p>{%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if coll != blank and coll.products.size > 0 -%}
+      <div class="pb-fc__grid">
+        {%- for product in coll.products limit: limit -%}
+          {%- render 'pb-product-card',
+            product: product,
+            show_price: s.show_price,
+            show_vendor: s.show_vendor,
+            show_quick_add: s.show_quick_add,
+            show_wishlist: s.show_wishlist,
+            show_badges: s.show_badges
+          -%}
+        {%- endfor -%}
+      </div>
+      {%- if s.button_label != blank -%}
+        <div class="pb-fc__more">
+          <a class="pb-btn pb-btn--outline" href="{{ s.button_link | default: coll.url | default: '#' }}">{{ s.button_label }}</a>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <p class="pb-fc__empty">Select a collection in the theme editor — your products will appear here automatically.</p>
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "PB Featured Collection",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Featured Collection" },
+    { "type": "text", "id": "subheading", "label": "Subheading" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Pick a collection — products load automatically." },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "per_row", "label": "Products per row (desktop)", "min": 2, "max": 6, "step": 1, "default": 4 },
+    { "type": "range", "id": "per_row_tablet", "label": "Products per row (tablet)", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "range", "id": "per_row_mobile", "label": "Products per row (mobile)", "min": 1, "max": 3, "step": 1, "default": 2 },
+    { "type": "range", "id": "rows", "label": "Rows", "min": 1, "max": 6, "step": 1, "default": 2 },
+    { "type": "range", "id": "gap", "label": "Gap", "min": 4, "max": 40, "step": 2, "unit": "px", "default": 20 },
+    { "type": "header", "content": "Card options" },
+    { "type": "checkbox", "id": "show_price", "label": "Show price", "default": true },
+    { "type": "checkbox", "id": "show_vendor", "label": "Show vendor", "default": false },
+    { "type": "checkbox", "id": "show_quick_add", "label": "Show quick add", "default": true },
+    { "type": "checkbox", "id": "show_wishlist", "label": "Show wishlist", "default": true },
+    { "type": "checkbox", "id": "show_badges", "label": "Show badges", "default": true },
+    { "type": "header", "content": "Footer" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "View all" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "header", "content": "Spacing & colour" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "presets": [ { "name": "PB Featured Collection" } ]
+}
+{% endschema %}

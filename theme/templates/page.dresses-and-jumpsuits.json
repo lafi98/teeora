@@ -1,0 +1,125 @@
+/*
+ * Page template: Dresses And Jumpsuits
+ * 20 reusable, editable PB sections. No products/collections are
+ * assigned — the three "Featured Collection" sections use a collection
+ * PICKER (empty here); select a collection in the editor and products
+ * appear automatically. Header, footer and nav come from section groups.
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "pb-hero-banner",
+      "settings": { "eyebrow": "New Collection", "heading": "Dresses & Jumpsuits", "text": "Effortless silhouettes for every occasion.", "button_label": "Shop now" }
+    },
+    "category_cards": {
+      "type": "pb-category-cards",
+      "settings": { "heading": "Shop by category", "columns": 3 },
+      "blocks": { "c1": { "type": "card" }, "c2": { "type": "card" }, "c3": { "type": "card" } },
+      "block_order": ["c1", "c2", "c3"]
+    },
+    "featured_1": {
+      "type": "pb-featured-collection",
+      "settings": { "heading": "Featured Collection", "per_row": 4, "rows": 2 }
+    },
+    "promo_1": {
+      "type": "pb-promo-banner",
+      "settings": { "heading": "Seasonal Offer", "text": "Discover our newest edit of dresses and jumpsuits." }
+    },
+    "featured_2": {
+      "type": "pb-featured-collection",
+      "settings": { "heading": "New In", "per_row": 4, "rows": 1 }
+    },
+    "testimonials": {
+      "type": "pb-testimonials",
+      "settings": { "heading": "What our customers say", "columns": 3 },
+      "blocks": { "t1": { "type": "testimonial" }, "t2": { "type": "testimonial" }, "t3": { "type": "testimonial" } },
+      "block_order": ["t1", "t2", "t3"]
+    },
+    "promo_2": {
+      "type": "pb-promo-banner",
+      "settings": { "heading": "Featured Product", "text": "Highlight a hero product or story here.", "height": 460 }
+    },
+    "mens": {
+      "type": "pb-featured-collection",
+      "settings": { "heading": "Men's Collection", "per_row": 4, "rows": 1 }
+    },
+    "features": {
+      "type": "pb-features",
+      "settings": { "columns": 4 },
+      "blocks": { "f1": { "type": "feature" }, "f2": { "type": "feature" }, "f3": { "type": "feature" }, "f4": { "type": "feature" } },
+      "block_order": ["f1", "f2", "f3", "f4"]
+    },
+    "countdown": {
+      "type": "pb-countdown",
+      "settings": { "heading": "Season Sale", "subheading": "Ends soon — up to 50% off" }
+    },
+    "newsletter": {
+      "type": "pb-newsletter",
+      "settings": { "heading": "Join our list", "description": "Sign up for early access, new arrivals and members-only offers." }
+    },
+    "faq": {
+      "type": "pb-faq",
+      "settings": { "heading": "Frequently asked questions" },
+      "blocks": { "q1": { "type": "faq" }, "q2": { "type": "faq" }, "q3": { "type": "faq" } },
+      "block_order": ["q1", "q2", "q3"]
+    },
+    "instagram": {
+      "type": "pb-instagram",
+      "settings": { "heading": "Follow us", "columns": 6 },
+      "blocks": { "i1": { "type": "photo" }, "i2": { "type": "photo" }, "i3": { "type": "photo" }, "i4": { "type": "photo" }, "i5": { "type": "photo" }, "i6": { "type": "photo" } },
+      "block_order": ["i1", "i2", "i3", "i4", "i5", "i6"]
+    },
+    "rich_text": {
+      "type": "pb-rich-text",
+      "settings": { "heading": "Our story" }
+    },
+    "spacer": {
+      "type": "pb-spacer",
+      "settings": { "height": 60, "height_mobile": 40 }
+    },
+    "divider": {
+      "type": "pb-divider",
+      "settings": { "width": 100 }
+    },
+    "custom_html": {
+      "type": "pb-custom-html",
+      "settings": {}
+    },
+    "image_with_text": {
+      "type": "pb-image-with-text",
+      "settings": { "heading": "Image with text" }
+    },
+    "multicolumn": {
+      "type": "pb-multicolumn",
+      "settings": { "heading": "Multi-column content", "columns": 3 },
+      "blocks": { "m1": { "type": "column" }, "m2": { "type": "column" }, "m3": { "type": "column" } },
+      "block_order": ["m1", "m2", "m3"]
+    },
+    "cta": {
+      "type": "pb-cta-banner",
+      "settings": { "heading": "Ready to shop the collection?", "text": "Discover dresses and jumpsuits made to move with you." }
+    }
+  },
+  "order": [
+    "hero",
+    "category_cards",
+    "featured_1",
+    "promo_1",
+    "featured_2",
+    "testimonials",
+    "promo_2",
+    "mens",
+    "features",
+    "countdown",
+    "newsletter",
+    "faq",
+    "instagram",
+    "rich_text",
+    "spacer",
+    "divider",
+    "custom_html",
+    "image_with_text",
+    "multicolumn",
+    "cta"
+  ]
+}

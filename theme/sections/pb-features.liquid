@@ -1,0 +1,48 @@
+{%- comment -%} PB — Features / Icons (9) {%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<section class="pb pb-section" style="--pb-pt: {{ s.padding_top }}px; --pb-pb: {{ s.padding_bottom }}px; --pb-section-bg: {{ s.background }}; --pb-cols: {{ s.columns }};">
+  <div class="pb__container">
+    {%- if s.heading != blank -%}<div class="pb-head"><h2 class="pb-title">{{ s.heading }}</h2></div>{%- endif -%}
+    <div class="pb-feats__grid">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <div class="pb-feat" {{ block.shopify_attributes }}>
+          {%- if b.icon != blank -%}
+            <span class="pb-feat__icon">{{ b.icon | image_url: width: 80 | image_tag: widths: '40,80', sizes: '40px', loading: 'lazy', alt: b.title | escape }}</span>
+          {%- endif -%}
+          {%- if b.title != blank -%}<h3 class="pb-feat__title">{{ b.title }}</h3>{%- endif -%}
+          {%- if b.description != blank -%}<p class="pb-feat__desc">{{ b.description }}</p>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "PB Features",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "range", "id": "columns", "label": "Columns", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 48 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Icon (SVG/PNG)" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Free shipping" },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "On all orders over $100." }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    { "name": "PB Features", "blocks": [ { "type": "feature" }, { "type": "feature" }, { "type": "feature" }, { "type": "feature" } ] }
+  ]
+}
+{% endschema %}

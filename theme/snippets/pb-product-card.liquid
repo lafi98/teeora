@@ -1,0 +1,61 @@
+{%- comment -%}
+  PB — product card (used by pb-featured-collection)
+  Params: product, show_price, show_vendor, show_quick_add,
+          show_wishlist, show_badges, sizes
+{%- endcomment -%}
+{%- liquid
+  assign show_price = show_price | default: true, allow_false: true
+  assign show_vendor = show_vendor | default: false, allow_false: true
+  assign show_quick_add = show_quick_add | default: true, allow_false: true
+  assign show_wishlist = show_wishlist | default: true, allow_false: true
+  assign show_badges = show_badges | default: true, allow_false: true
+  assign sizes = sizes | default: '(min-width:990px) 22vw, (min-width:750px) 33vw, 50vw'
+  assign second = product.images[1]
+  assign on_sale = false
+  if product.compare_at_price > product.price and product.available
+    assign on_sale = true
+  endif
+  assign v = product.selected_or_first_available_variant
+-%}
+<article class="pb-pc" data-product-id="{{ product.id }}">
+  <a class="pb-pc__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 800 | image_tag: widths: '200,300,450,600,800', sizes: sizes, class: 'pb-pc__img pb-pc__img--front', loading: 'lazy', alt: product.featured_image.alt | default: product.title | escape }}
+    {%- else -%}
+      <span class="pb-pc__img pb-pc__img--front pb-noimg" role="img" aria-label="{{ product.title | escape }}"></span>
+    {%- endif -%}
+    {%- if second -%}
+      {{ second | image_url: width: 800 | image_tag: widths: '200,300,450,600,800', sizes: sizes, class: 'pb-pc__img pb-pc__img--back', loading: 'lazy', alt: '' }}
+    {%- endif -%}
+    {%- if show_badges -%}
+      {%- unless product.available -%}<span class="pb-badge pb-badge--soldout">Sold out</span>
+      {%- else -%}
+        {%- if on_sale -%}<span class="pb-badge pb-badge--sale">Sale</span>{%- endif -%}
+        {%- if product.tags contains 'new' or product.tags contains 'New' -%}<span class="pb-badge pb-badge--new">New</span>{%- endif -%}
+      {%- endunless -%}
+    {%- endif -%}
+  </a>
+
+  {%- if show_wishlist -%}
+    <button type="button" class="pb-pc__wish" data-pb-wishlist="{{ product.id }}" aria-label="Save {{ product.title | escape }}" aria-pressed="false">
+      <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 20S4 15 4 9.5A3.5 3.5 0 0 1 12 7a3.5 3.5 0 0 1 8 2.5C20 15 12 20 12 20z"/></svg>
+    </button>
+  {%- endif -%}
+
+  {%- if show_quick_add and product.available -%}
+    <div class="pb-pc__quick">
+      <button type="button" class="pb-pc__quick-btn" data-pb-add="{{ v.id }}">Quick add</button>
+    </div>
+  {%- endif -%}
+
+  <div class="pb-pc__info">
+    {%- if show_vendor and product.vendor != blank -%}<span class="pb-pc__vendor">{{ product.vendor }}</span>{%- endif -%}
+    <a class="pb-pc__title" href="{{ product.url }}">{{ product.title }}</a>
+    {%- if show_price -%}
+      <span class="pb-pc__price">
+        {%- if on_sale -%}<span class="pb-pc__sale">{{ product.price | money }}</span><s>{{ product.compare_at_price | money }}</s>
+        {%- else -%}{{ product.price | money }}{%- endif -%}
+      </span>
+    {%- endif -%}
+  </div>
+</article>

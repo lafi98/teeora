@@ -1,0 +1,43 @@
+{%- comment -%} PB — Promotional Banner (4 & 7) {%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign ov = s.overlay_opacity | divided_by: 100.0
+-%}
+<section class="pb pb-promo" style="--pb-promo-h: {{ s.height }}px; --pb-promo-ov: {{ ov }}; --pb-promo-justify: {{ s.content_position }}; --pb-promo-align: {{ s.text_align }}; --pb-promo-items: {{ s.align_items }}; --pb-promo-bg: {{ s.background }}; --pb-promo-color: {{ s.text_color }};">
+  <div class="pb-promo__media">
+    {%- if s.image != blank -%}
+      {{ s.image | image_url: width: 2400 | image_tag: widths: '750,1100,1500,1900,2400', sizes: '100vw', class: 'pb-promo__img', loading: 'lazy', alt: s.heading | escape }}
+    {%- endif -%}
+    {%- if s.image != blank -%}<span class="pb-promo__overlay"></span>{%- endif -%}
+  </div>
+  <div class="pb-promo__content">
+    {%- if s.eyebrow != blank -%}<p class="pb-hero__eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+    {%- if s.heading != blank -%}<h2 class="pb-promo__title">{{ s.heading }}</h2>{%- endif -%}
+    {%- if s.text != blank -%}<p class="pb-promo__text">{{ s.text }}</p>{%- endif -%}
+    {%- if s.button_label != blank -%}<a class="pb-btn pb-btn--light" href="{{ s.button_link | default: '#' }}">{{ s.button_label }}</a>{%- endif -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "PB Promo Banner",
+  "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background image" },
+    { "type": "color", "id": "background", "label": "Background colour (if no image)", "default": "#1b1b1b" },
+    { "type": "text", "id": "eyebrow", "label": "Subtitle" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Promotional Banner" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Add supporting copy for your promotion here." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop now" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "color", "id": "text_color", "label": "Text colour", "default": "#ffffff" },
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "content_position", "label": "Content position", "options": [ {"value":"start","label":"Left"}, {"value":"center","label":"Center"}, {"value":"end","label":"Right"} ], "default": "center" },
+    { "type": "select", "id": "text_align", "label": "Text alignment", "options": [ {"value":"left","label":"Left"}, {"value":"center","label":"Center"}, {"value":"right","label":"Right"} ], "default": "center" },
+    { "type": "select", "id": "align_items", "label": "Items alignment", "options": [ {"value":"flex-start","label":"Left"}, {"value":"center","label":"Center"}, {"value":"flex-end","label":"Right"} ], "default": "center" },
+    { "type": "range", "id": "overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 40 },
+    { "type": "range", "id": "height", "label": "Height", "min": 280, "max": 720, "step": 20, "unit": "px", "default": 400 }
+  ],
+  "presets": [ { "name": "PB Promo Banner" } ]
+}
+{% endschema %}

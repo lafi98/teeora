@@ -1,0 +1,53 @@
+{%- comment -%} PB — Multi-column Content (19) {%- endcomment -%}
+{{ 'pb.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<section class="pb pb-section" style="--pb-pt: {{ s.padding_top }}px; --pb-pb: {{ s.padding_bottom }}px; --pb-section-bg: {{ s.background }}; --pb-cols: {{ s.columns }}; --pb-mc-align: {{ s.alignment }}; --pb-mc-items: {{ s.align_items }};">
+  <div class="pb__container">
+    {%- if s.heading != blank -%}<div class="pb-head"><h2 class="pb-title">{{ s.heading }}</h2></div>{%- endif -%}
+    <div class="pb-mc__grid">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <div class="pb-mc__col" {{ block.shopify_attributes }}>
+          {%- if b.image != blank -%}
+            {{ b.image | image_url: width: 700 | image_tag: widths: '250,450,700', sizes: '(min-width:750px) 30vw, 90vw', class: 'pb-mc__img', loading: 'lazy', alt: b.title | escape }}
+          {%- endif -%}
+          {%- if b.title != blank -%}<h3 class="pb-mc__title">{{ b.title }}</h3>{%- endif -%}
+          {%- if b.text != blank -%}<div class="pb-mc__text">{{ b.text }}</div>{%- endif -%}
+          {%- if b.link_label != blank -%}<a class="pb-btn pb-btn--outline" href="{{ b.link | default: '#' }}">{{ b.link_label }}</a>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "PB Multi-column",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "range", "id": "columns", "label": "Columns", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "select", "id": "alignment", "label": "Text alignment", "options": [ {"value":"left","label":"Left"}, {"value":"center","label":"Center"} ], "default": "left" },
+    { "type": "select", "id": "align_items", "label": "Content position", "options": [ {"value":"flex-start","label":"Left"}, {"value":"center","label":"Center"} ], "default": "flex-start" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 56 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Column",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Column title" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Supporting text for this column.</p>" },
+        { "type": "text", "id": "link_label", "label": "Link label" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    { "name": "PB Multi-column", "blocks": [ { "type": "column" }, { "type": "column" }, { "type": "column" } ] }
+  ]
+}
+{% endschema %}
